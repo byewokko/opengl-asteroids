@@ -4,9 +4,13 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 
+import com.example.asteroidsopengl.entities.GLEntity;
+import com.example.asteroidsopengl.entities.Player;
+
 public class Game extends GLSurfaceView {
     private static final String TAG = "Game";
-    private GlRenderer _renderer = null;
+    private GLRenderer _renderer = null;
+    private Player _player = null;
 
     public Game(final Context context) {
         super(context);
@@ -20,12 +24,13 @@ public class Game extends GLSurfaceView {
 
     private void init(){
         setEGLContextClientVersion(2);
-        _renderer = new GlRenderer();
+        _renderer = new GLRenderer();
+        GLManager.buildProgram();
         setRenderer(_renderer);
-//        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        GLEntity._game = this;
+        _player = new Player(0f, 0.5f);
+        _renderer.addEntities(_player);
     }
-
-
 
 
 

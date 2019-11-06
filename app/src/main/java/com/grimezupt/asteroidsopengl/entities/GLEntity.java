@@ -1,8 +1,8 @@
-package com.example.asteroidsopengl.entities;
+package com.grimezupt.asteroidsopengl.entities;
 
-import com.example.asteroidsopengl.Game;
-import com.example.asteroidsopengl.GLManager;
-import com.example.asteroidsopengl.Mesh;
+import com.grimezupt.asteroidsopengl.Game;
+import com.grimezupt.asteroidsopengl.GLManager;
+import com.grimezupt.asteroidsopengl.Mesh;
 
 import java.util.Objects;
 

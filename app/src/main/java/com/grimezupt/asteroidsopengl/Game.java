@@ -1,11 +1,11 @@
-package com.example.asteroidsopengl;
+package com.grimezupt.asteroidsopengl;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 
-import com.example.asteroidsopengl.entities.GLEntity;
-import com.example.asteroidsopengl.entities.Player;
+import com.grimezupt.asteroidsopengl.entities.GLEntity;
+import com.grimezupt.asteroidsopengl.entities.Player;
 
 public class Game extends GLSurfaceView {
     private static final String TAG = "Game";

@@ -1,9 +1,9 @@
-package com.example.asteroidsopengl;
+package com.grimezupt.asteroidsopengl;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
-import com.example.asteroidsopengl.entities.GLEntity;
+import com.grimezupt.asteroidsopengl.entities.GLEntity;
 
 import java.util.ArrayList;
 import java.util.Collection;

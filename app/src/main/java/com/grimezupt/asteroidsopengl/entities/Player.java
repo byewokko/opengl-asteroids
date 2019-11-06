@@ -1,6 +1,6 @@
-package com.example.asteroidsopengl.entities;
+package com.grimezupt.asteroidsopengl.entities;
 
-import com.example.asteroidsopengl.Triangle;
+import com.grimezupt.asteroidsopengl.Triangle;
 
 public class Player extends GLEntity {
     private static final String TAG = "Player";

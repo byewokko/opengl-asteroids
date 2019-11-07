@@ -1,5 +1,7 @@
 package com.grimezupt.asteroidsopengl.entities;
 
+import android.opengl.Matrix;
+
 import com.grimezupt.asteroidsopengl.Game;
 import com.grimezupt.asteroidsopengl.GLManager;
 import com.grimezupt.asteroidsopengl.Mesh;
@@ -8,22 +10,35 @@ import java.util.Objects;
 
 public class GLEntity {
     public static Game _game = null;
+    public static final float[] modelMatrix = new float[4*4];
+    public static final float[] viewportModelMatrix = new float[4*4];
+    public static final float[] rotationViewportModelMatrix = new float[4*4];
+
     Mesh _mesh = null;
     float[] _color = {1.0f, 1.0f, 1.0f, 1.0f};
     float _x = 0f;
     float _y = 0f;
     float _depth = 0f;
     float _scale = 1f;
-    float _roatation = 0f;
+    float _rotation = 0f;
 
     public GLEntity() {
     }
 
     public void update(double dt){}
 
-    public void render() {
-        GLManager.draw(_mesh, _color);
-    } // FIXME: part of the screen is covered by a random rectangle
+    public void render(float[] viewportMatrix) {
+        final int OFFSET = 0;
+        Matrix.setIdentityM(modelMatrix, OFFSET);
+        Matrix.translateM(modelMatrix, OFFSET, _x, _y, _depth);
+        Matrix.multiplyMM(viewportModelMatrix, OFFSET,
+                viewportMatrix, OFFSET, modelMatrix, OFFSET);
+        Matrix.setRotateM(modelMatrix, OFFSET, _rotation, 0f, 0f, 1f);
+        Matrix.scaleM(modelMatrix, OFFSET, _scale, _scale, 1f);
+        Matrix.multiplyMM(rotationViewportModelMatrix, OFFSET,
+                viewportModelMatrix, OFFSET, modelMatrix, OFFSET);
+        GLManager.draw(_mesh, rotationViewportModelMatrix, _color);
+    }
 
     public void onCollision(final GLEntity that){}
 

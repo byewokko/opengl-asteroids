@@ -32,7 +32,8 @@ public class Game extends GLSurfaceView {
 
 
     public void buildEntities() {
-        _player = new Player(0f, 0.5f);
+//        _player = new Player(0f, 0f);
+        _player = new Player(GLRenderer.WORLD_WIDTH/2f, GLRenderer.WORLD_HEIGHT/2f);
         _renderer.addEntities(_player);
     }
 }

@@ -23,18 +23,16 @@ public class Game extends GLSurfaceView {
     }
 
     private void init(){
+        GLEntity._game = this;
+        GLRenderer._game = this;
         setEGLContextClientVersion(2);
         _renderer = new GLRenderer();
-        GLManager.buildProgram();
         setRenderer(_renderer);
-        GLEntity._game = this;
-        _player = new Player(0f, 0.5f);
-        _renderer.addEntities(_player);
     }
 
 
-
-
-
-
+    public void buildEntities() {
+        _player = new Player(0f, 0.5f);
+        _renderer.addEntities(_player);
+    }
 }

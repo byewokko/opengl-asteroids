@@ -35,7 +35,7 @@ public class Mesh {
                 .asFloatBuffer();
         _vertexBuffer.put(geometry);
         _vertexBuffer.position(0);
-        _vertexCount = geometry.length;
+        _vertexCount = geometry.length / COORDS_PER_VERTEX;
     }
 
     private void setDrawMode(int drawMode) {

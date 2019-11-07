@@ -14,6 +14,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class GLRenderer implements GLSurfaceView.Renderer {
     private static final String TAG = "GLRenderer";
     private final ArrayList<GLEntity> _entities = new ArrayList<>();
+    static Game _game = null;
 
     public GLRenderer() {
         GLManager.buildProgram();
@@ -22,6 +23,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(final GL10 unused, final EGLConfig config) {
         GLES20.glClearColor(0.7f, 0.1f, 0.4f, 1f);
+        _game.buildEntities();
         GLManager.buildProgram();
         // build program (shaders)
         // compile program

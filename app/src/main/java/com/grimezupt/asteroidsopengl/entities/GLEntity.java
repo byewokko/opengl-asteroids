@@ -48,7 +48,7 @@ public class GLEntity {
         setColors(colors[0], colors[1], colors[2], colors[3]);
     }
 
-    private void setColors(final float r, final float g, final float b, final float a) {
+    void setColors(final float r, final float g, final float b, final float a) {
         _color[0] = r;
         _color[1] = g;
         _color[2] = b;

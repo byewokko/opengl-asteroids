@@ -16,9 +16,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private static final String TAG = "GLRenderer";
     static Game _game = null;
 
-    public static float WORLD_WIDTH = 160f; //all dimensions are in meters
-    public static float WORLD_HEIGHT = 90f;
-    static float METERS_TO_SHOW_X = 160f; //160m x 90m, the entire game world in view
+    public static float WORLD_WIDTH = 80f; //all dimensions are in meters
+    public static float WORLD_HEIGHT = 80f;
+    public static float METERS_TO_SHOW_X = 160f; //160m x 90m, the entire game world in view
     public static float METERS_TO_SHOW_Y = 90f; //TODO: calculate to match screen aspect ratio
 
     private float[] _viewportMatrix = new float[4*4];

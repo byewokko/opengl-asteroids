@@ -67,6 +67,7 @@ public class GLManager {
         _colorUniformHandle = GLES20.glGetUniformLocation(_glProgramHandle, "color");
         _MVPMatrixHandle = GLES20.glGetUniformLocation(_glProgramHandle, "modelViewProjection");
         GLES20.glUseProgram(_glProgramHandle);
+        GLES20.glLineWidth(8f);
         checkGLError("buildProgram");
     }
 

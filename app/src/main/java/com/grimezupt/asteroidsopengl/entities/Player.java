@@ -31,18 +31,18 @@ public class Player extends GLEntity {
         final float TO_RADIANS = (float)Math.PI/180.0f;
         final float startPositionX = GLRenderer.WORLD_WIDTH/2;
         final float startPositionY = GLRenderer.WORLD_HEIGHT/2;
-        final float range = GLRenderer.METERS_TO_SHOW_Y/2f; //amplitude of our sine wave (how far to travel)
+        final float rangeX = GLRenderer.WORLD_WIDTH/2f; //amplitude of our sine wave (how far to travel)
+        final float rangeY = GLRenderer.WORLD_HEIGHT/2f; //amplitude of our sine wave (how far to travel)
         final double speed = 360d/2000d; //I want to cover a full revolution (360 degrees) in 2 seconds.
         double angle = (SystemClock.uptimeMillis() * speed) % 360d; //turn linear, ever growing, timestamp into 0-359 range
-        angle *= TO_RADIANS; //convert degrees to radians, that's what sin wants.
+        double angle_rad = angle * TO_RADIANS; //convert degrees to radians, that's what sin wants.
 
         //sin() returns a numeric value between [-1.0, 1.0], the sine of the angle given in radians.
         //perfect for moving smoothly up-and-down some range
-        _x = (float) (startPositionX + Math.sin(angle) * range);
-        _y = (float) (startPositionY + Math.sin(2d*angle) * range);
+        _x = (float) (startPositionX + Math.cos(angle_rad) * rangeX);
+        _y = (float) (startPositionY + Math.sin(2f*angle_rad) * rangeY);
 //        Log.d(TAG, String.format("%s ", SystemClock.uptimeMillis()));
-        long time = SystemClock.uptimeMillis() % 5000; //turn a timestamp into 0-4999 ms
-        _rotation = (360.0f / 5000.0f) * time; // Do a complete rotation every 5 seconds.
+        _rotation = (float) angle; // Do a complete rotation every 5 seconds.
         super.render(viewportMatrix);
     }
 }

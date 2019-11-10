@@ -20,6 +20,7 @@ public class GLManager {
                     "void main() {\n" +             // The entry point for our vertex shader.
                     "    gl_Position = modelViewProjection\n" +    // gl_Position is a special variable used to store the final position.
                     "        * position;\n" +       // Multiply the vertex by the matrix to get the final point in normalized screen coordinates.
+                    "    gl_PointSize = 3.0;\n" + //pixel width of points
                     "}\n";
     private final static String _fragmentShaderCode =
             "precision mediump float;\n" +        //we don't need high precision floats for fragments

@@ -11,6 +11,7 @@ import com.grimezupt.asteroidsopengl.entities.Player;
 public class Game extends GLSurfaceView {
     private static final String TAG = "Game";
     private GLRenderer _renderer = null;
+    private World _world = null;
     private Player _player = null;
     private GLBorder _border = null;
 
@@ -27,17 +28,10 @@ public class Game extends GLSurfaceView {
     private void init(){
         GLEntity._game = this;
         GLRenderer._game = this;
+        World._game = this;
+        _world = new World();
         setEGLContextClientVersion(2);
-        _renderer = new GLRenderer();
+        _renderer = new GLRenderer(_world);
         setRenderer(_renderer);
-    }
-
-
-    public void buildEntities() {
-//        _player = new Player(0f, 0f);
-        _player = new Player(GLRenderer.WORLD_WIDTH/2f, GLRenderer.WORLD_HEIGHT/2f);
-        _border = new GLBorder(0f, 0f, GLRenderer.WORLD_WIDTH, GLRenderer.WORLD_HEIGHT);
-        _renderer.addEntities(_player);
-        _renderer.addEntities(_border);
     }
 }

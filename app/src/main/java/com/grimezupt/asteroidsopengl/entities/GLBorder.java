@@ -2,7 +2,7 @@ package com.grimezupt.asteroidsopengl.entities;
 
 import android.opengl.GLES20;
 
-import com.grimezupt.asteroidsopengl.Mesh;
+import com.grimezupt.asteroidsopengl.mesh.Mesh;
 
 public class GLBorder extends GLEntity {
 

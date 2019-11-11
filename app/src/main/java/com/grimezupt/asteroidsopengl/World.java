@@ -1,9 +1,11 @@
 package com.grimezupt.asteroidsopengl;
 
+import com.grimezupt.asteroidsopengl.entities.Asteroid;
 import com.grimezupt.asteroidsopengl.entities.GLBorder;
 import com.grimezupt.asteroidsopengl.entities.GLEntity;
 import com.grimezupt.asteroidsopengl.entities.Player;
 import com.grimezupt.asteroidsopengl.entities.Star;
+import com.grimezupt.asteroidsopengl.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +34,11 @@ public class World {
         addEntity(_border);
         for (int i = 0; i < STAR_COUNT; i++){
             addEntity(Star.random(WIDTH, HEIGHT));
+        }
+        for (int points = 3; points <= 9; points++){
+            addEntity(new Asteroid(Random.between(0, WIDTH),
+                    Random.between(0, HEIGHT),
+                    points));
         }
     }
 

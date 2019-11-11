@@ -1,4 +1,4 @@
-package com.grimezupt.asteroidsopengl;
+package com.grimezupt.asteroidsopengl.mesh;
 
 public class Triangle extends Mesh {
     static float[] vertices = {

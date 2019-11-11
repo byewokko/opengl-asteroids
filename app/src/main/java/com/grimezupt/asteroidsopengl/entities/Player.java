@@ -3,7 +3,7 @@ package com.grimezupt.asteroidsopengl.entities;
 import android.os.SystemClock;
 
 import com.grimezupt.asteroidsopengl.Config;
-import com.grimezupt.asteroidsopengl.Triangle;
+import com.grimezupt.asteroidsopengl.mesh.Triangle;
 import com.grimezupt.asteroidsopengl.World;
 
 public class Player extends GLEntity {
@@ -13,9 +13,7 @@ public class Player extends GLEntity {
         super();
         _x = x;
         _y = y;
-        _scale = 20f;
-        final float [] color = Config.Colors.FOREGROUND;
-        setColors(color);
+        _scale = 10f;
         _mesh = new Triangle();
     }
 

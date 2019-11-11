@@ -2,9 +2,10 @@ package com.grimezupt.asteroidsopengl.entities;
 
 import android.opengl.Matrix;
 
+import com.grimezupt.asteroidsopengl.Config;
 import com.grimezupt.asteroidsopengl.Game;
 import com.grimezupt.asteroidsopengl.GLManager;
-import com.grimezupt.asteroidsopengl.Mesh;
+import com.grimezupt.asteroidsopengl.mesh.Mesh;
 
 import java.util.Objects;
 
@@ -15,17 +16,25 @@ public class GLEntity {
     public static final float[] rotationViewportModelMatrix = new float[4*4];
 
     Mesh _mesh = null;
-    float[] _color = {1.0f, 1.0f, 1.0f, 1.0f};
-    float _x = 0f;
-    float _y = 0f;
-    float _depth = 0f;
-    float _scale = 1f;
-    float _rotation = 0f;
+    private float[] _color = new float[4];
+    public float _x = 0f;
+    public float _y = 0f;
+    public float _depth = 0f;
+    public float _scale = 1f;
+    public float _rotation = 0f;
+    public float _velX = 0f;
+    public float _velY = 0f;
+    public float _velW = 0f; //angular velocity
 
     public GLEntity() {
+        setColors(Config.Colors.FOREGROUND);
     }
 
-    public void update(double dt){}
+    public void update(double dt){
+        _x += _velX * dt;
+        _y += _velY * dt;
+        _rotation += _velW * dt;
+    }
 
     public void render(float[] viewportMatrix) {
         final int OFFSET = 0;

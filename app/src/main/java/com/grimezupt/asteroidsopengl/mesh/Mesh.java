@@ -1,4 +1,4 @@
-package com.grimezupt.asteroidsopengl;
+package com.grimezupt.asteroidsopengl.mesh;
 
 import android.opengl.GLES20;
 

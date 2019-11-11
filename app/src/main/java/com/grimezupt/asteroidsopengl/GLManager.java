@@ -3,11 +3,14 @@ package com.grimezupt.asteroidsopengl;
 import android.opengl.GLES20;
 import android.util.Log;
 
+import com.grimezupt.asteroidsopengl.mesh.Mesh;
+
 import java.nio.FloatBuffer;
 
 public class GLManager {
     private static final String TAG = "GLManager";
     private static final int OFFSET = 0;
+    public static final float LINE_WIDTH = 6f;
 
     private static int _glProgramHandle;
     private static int _colorUniformHandle;
@@ -68,7 +71,7 @@ public class GLManager {
         _colorUniformHandle = GLES20.glGetUniformLocation(_glProgramHandle, "color");
         _MVPMatrixHandle = GLES20.glGetUniformLocation(_glProgramHandle, "modelViewProjection");
         GLES20.glUseProgram(_glProgramHandle);
-        GLES20.glLineWidth(8f);
+        GLES20.glLineWidth(LINE_WIDTH);
         checkGLError("buildProgram");
     }
 

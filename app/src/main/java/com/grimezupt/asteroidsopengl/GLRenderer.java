@@ -20,20 +20,18 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     private float[] _viewportMatrix = new float[4*4];
 
-    private float[] _bgColor = Config.Colors.BACKGROUND;
+    private float[] _bgColor;
     private long lastFrame;
 
     public GLRenderer(World world) {
         _world = world;
-        GLManager.buildProgram();
         lastFrame = System.nanoTime();
     }
 
     @Override
     public void onSurfaceCreated(final GL10 unused, final EGLConfig config) {
         GLManager.buildProgram();
-        GLES20.glClearColor(_bgColor[0], _bgColor[1], _bgColor[2], _bgColor[3]);
-        _world.build();
+        setBgColor(Config.Colors.BACKGROUND);
     }
 
     @Override
@@ -43,9 +41,27 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(final GL10 unused) {
-        final double dt = (System.nanoTime() - lastFrame) * NANOSECOND;
-        lastFrame = System.nanoTime();
-        _world.update(dt);
+        update();
+        render();
+    }
+
+    //trying a fixed time-step with accumulator, courtesy of
+    //   https://gafferongames.com/post/fix_your_timestep/
+    final double dt = 0.01;
+    double accumulator = 0.0;
+    double currentTime = System.nanoTime()*NANOSECOND;
+    public void update() {
+        final double newTime = System.nanoTime()*NANOSECOND;
+        final double frameTime = newTime - currentTime;
+        currentTime = newTime;
+        accumulator += frameTime;
+        while(accumulator >= dt){
+            _world.update(dt);
+            accumulator -= dt;
+        }
+    }
+
+    public void render() {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         final int offset = 0;
         final float left = 0;
@@ -62,5 +78,6 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     public void setBgColor(float[] bgColor) {
         _bgColor = bgColor;
+        GLES20.glClearColor(_bgColor[0], _bgColor[1], _bgColor[2], _bgColor[3]);
     }
 }

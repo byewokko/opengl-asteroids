@@ -5,6 +5,7 @@ import android.opengl.Matrix;
 import com.grimezupt.asteroidsopengl.Config;
 import com.grimezupt.asteroidsopengl.Game;
 import com.grimezupt.asteroidsopengl.GLManager;
+import com.grimezupt.asteroidsopengl.World;
 import com.grimezupt.asteroidsopengl.mesh.Mesh;
 
 import java.util.Objects;
@@ -34,6 +35,18 @@ public class GLEntity {
         _x += _velX * dt;
         _y += _velY * dt;
         _rotation += _velW * dt;
+        _mesh.updateBounds();
+        if (left() > World.WIDTH){
+            setRight(0);
+        } else if (right() < 0){
+            setLeft(World.WIDTH);
+        }
+        if (bottom() > World.HEIGHT){
+            setTop(0);
+        } else if (top() < 0){
+            setBottom(World.HEIGHT);
+        }
+
     }
 
     public void render(float[] viewportMatrix) {
@@ -62,5 +75,37 @@ public class GLEntity {
         _color[1] = g;
         _color[2] = b;
         _color[3] = a;
+    }
+
+    public float left() {
+        return _x+_mesh.left();
+    }
+
+    public float right() {
+        return _x+_mesh.right();
+    }
+
+    public float top() {
+        return _y+_mesh.top();
+    }
+
+    public  float bottom() {
+        return _y+_mesh.bottom();
+    }
+
+    public void setLeft(final float xPosition) {
+        _x = xPosition - _mesh.left();
+    }
+
+    public void setRight(final float xPosition) {
+        _x = xPosition - _mesh.right();
+    }
+
+    public void setTop(final float yPosition) {
+        _y = yPosition - _mesh.top();
+    }
+
+    public void setBottom(final float yPosition) {
+        _y = yPosition - _mesh.bottom();
     }
 }

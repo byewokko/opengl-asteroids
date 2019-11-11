@@ -13,8 +13,11 @@ public class Asteroid extends GLEntity {
     public Asteroid(final float x, final float y, final int points, final float radius) {
         _x = x;
         _y = y;
-        _velX = Random.between(0, 10f);
-        _velY = Random.between(0, 10f);
+        final float velocity = Random.between(10f, 15f);
+        final float angle = Random.between(0f, (float) (Math.PI * 2f));
+        _velX = (float) (Math.cos(angle) * velocity);
+        _velY = (float) (Math.sin(angle) * velocity);
+        _velW = Random.between(-30f, 30f);
         _radius = radius;
         _mesh = GLEquiPolygon.build(points, radius);
     }
@@ -26,7 +29,7 @@ public class Asteroid extends GLEntity {
     @Override
     public void update(double dt) {
         super.update(dt);
-        wrap();
+//        wrap();
     }
 
     private void wrap() {

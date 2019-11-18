@@ -20,6 +20,8 @@ public class GLEntity {
     private float[] _color = new float[4];
     public float _x = 0f;
     public float _y = 0f;
+    public float _width = 0f;
+    public float _height = 0f;
     public float _depth = 0f;
     public float _scale = 1f;
     public float _rotation = 0f;
@@ -46,7 +48,7 @@ public class GLEntity {
         } else if (top() < 0){
             setBottom(World.HEIGHT);
         }
-
+        //TODO: set _width and _height here
     }
 
     public void render(float[] viewportMatrix) {

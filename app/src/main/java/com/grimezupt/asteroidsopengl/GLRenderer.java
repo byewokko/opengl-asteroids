@@ -66,8 +66,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         final int offset = 0;
         final float left = 0;
         final float right = METERS_TO_SHOW_X;
-        final float bottom = 0;
-        final float top = METERS_TO_SHOW_Y;
+        final float bottom = METERS_TO_SHOW_Y;
+        final float top = 0;
         final float near = 0f;
         final float far = 1f;
         Matrix.orthoM(_viewportMatrix, offset, left, right, bottom, top, near, far);

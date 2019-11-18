@@ -3,6 +3,7 @@ package com.grimezupt.asteroidsopengl;
 import com.grimezupt.asteroidsopengl.entities.Asteroid;
 import com.grimezupt.asteroidsopengl.entities.GLBorder;
 import com.grimezupt.asteroidsopengl.entities.GLEntity;
+import com.grimezupt.asteroidsopengl.entities.GLText;
 import com.grimezupt.asteroidsopengl.entities.Player;
 import com.grimezupt.asteroidsopengl.entities.Star;
 import com.grimezupt.asteroidsopengl.utils.Random;
@@ -40,6 +41,7 @@ public class World {
                     Random.between(0, HEIGHT),
                     points));
         }
+        addEntity(new GLText("HELLO world", WIDTH /2f, HEIGHT /2f));
     }
 
     public void update(double dt){

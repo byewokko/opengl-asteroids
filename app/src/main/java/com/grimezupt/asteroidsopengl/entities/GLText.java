@@ -19,11 +19,13 @@ public class GLText extends GLEntity {
     private float _glyphWidth = GLYPH_WIDTH;
     private float _glyphHeight = GLYPH_HEIGHT;
     private float[] _color = Config.Colors.FOREGROUND;
+    private float _pointSize = POINT_SIZE;
 
     public GLText(final String s, final float x, final float y) {
         setString(s);
         _x = x;
         _y = y;
+        setScale(0.5f);
     }
 
     @Override
@@ -35,7 +37,7 @@ public class GLText extends GLEntity {
             Matrix.translateM(modelMatrix, OFFSET, _x + (_glyphWidth+_spacing)*i, _y, _depth);
             Matrix.scaleM(modelMatrix, OFFSET, _scale, _scale, 1f);
             Matrix.multiplyMM(viewportModelMatrix, OFFSET, viewportMatrix, OFFSET, modelMatrix, OFFSET);
-            GLManager.draw(_meshes[i], viewportModelMatrix, _color, POINT_SIZE);
+            GLManager.draw(_meshes[i], viewportModelMatrix, _color, _pointSize);
         }
     }
 
@@ -51,6 +53,7 @@ public class GLText extends GLEntity {
         _glyphHeight = GLYPH_HEIGHT*_scale;
         _height = _glyphHeight;
         _width = (_glyphWidth+_spacing)*_meshes.length;
+        _pointSize = POINT_SIZE*_scale;
     }
 
     public void setString(final String s){

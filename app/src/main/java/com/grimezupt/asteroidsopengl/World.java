@@ -41,7 +41,7 @@ public class World {
                     Random.between(0, HEIGHT),
                     points));
         }
-        addEntity(new GLText("HELLO world", WIDTH /2f, HEIGHT /2f));
+        addEntity(new GLText("HELLO world", 0, 0));
     }
 
     public void update(double dt){

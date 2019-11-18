@@ -12,6 +12,7 @@ public class GLText extends GLEntity {
     public static float GLYPH_WIDTH = GLPixelFont.WIDTH;
     public static float GLYPH_HEIGHT = GLPixelFont.HEIGHT;
     public static float GLYPH_SPACING = 1f;
+    public static float POINT_SIZE = 6f;
 
     Mesh[] _meshes = null;
     private float _spacing = GLYPH_SPACING; //spacing between characters
@@ -34,7 +35,7 @@ public class GLText extends GLEntity {
             Matrix.translateM(modelMatrix, OFFSET, _x + (_glyphWidth+_spacing)*i, _y, _depth);
             Matrix.scaleM(modelMatrix, OFFSET, _scale, _scale, 1f);
             Matrix.multiplyMM(viewportModelMatrix, OFFSET, viewportMatrix, OFFSET, modelMatrix, OFFSET);
-            GLManager.draw(_meshes[i], viewportModelMatrix, _color);
+            GLManager.draw(_meshes[i], viewportModelMatrix, _color, POINT_SIZE);
         }
     }
 

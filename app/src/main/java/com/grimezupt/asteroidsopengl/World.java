@@ -29,13 +29,13 @@ public class World {
     }
 
     public void build() {
+        for (int i = 0; i < STAR_COUNT; i++){
+            addEntity(Star.random(WIDTH, HEIGHT));
+        }
         _player = new Player(WIDTH /2f, HEIGHT /2f);
         addEntity(_player);
         _border = new GLBorder(0f, 0f, WIDTH, HEIGHT);
         addEntity(_border);
-        for (int i = 0; i < STAR_COUNT; i++){
-            addEntity(Star.random(WIDTH, HEIGHT));
-        }
         for (int points = 3; points <= 9; points++){
             addEntity(new Asteroid(Random.between(0, WIDTH),
                     Random.between(0, HEIGHT),

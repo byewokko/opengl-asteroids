@@ -17,7 +17,7 @@ public class GLEntity {
     public static final float[] rotationViewportModelMatrix = new float[4*4];
 
     Mesh _mesh = null;
-    private float[] _color = new float[4];
+    float[] _color = new float[4];
     public float _x = 0f;
     public float _y = 0f;
     public float _width = 0f;
@@ -52,6 +52,11 @@ public class GLEntity {
     }
 
     public void render(float[] viewportMatrix) {
+        configureMatrix(viewportMatrix);
+        GLManager.draw(_mesh, rotationViewportModelMatrix, _color);
+    }
+
+    public void configureMatrix(float[] viewportMatrix) {
         final int OFFSET = 0;
         Matrix.setIdentityM(modelMatrix, OFFSET);
         Matrix.translateM(modelMatrix, OFFSET, _x, _y, _depth);
@@ -61,7 +66,6 @@ public class GLEntity {
         Matrix.scaleM(modelMatrix, OFFSET, _scale, _scale, 1f);
         Matrix.multiplyMM(rotationViewportModelMatrix, OFFSET,
                 viewportModelMatrix, OFFSET, modelMatrix, OFFSET);
-        GLManager.draw(_mesh, rotationViewportModelMatrix, _color);
     }
 
     public void onCollision(final GLEntity that){}

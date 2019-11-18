@@ -38,7 +38,7 @@ public class GLPixelFont {
             return null;
         }
         int i = c - OFFSET;
-        if(_glyphs[i] == null){ // TODO: suspicious
+        if(_glyphs[i] == null){
             _glyphs[i] = createMeshForGlyph(c);
         }
         return _glyphs[i];

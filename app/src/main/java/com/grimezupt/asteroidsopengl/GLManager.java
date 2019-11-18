@@ -15,15 +15,17 @@ public class GLManager {
     private static int _glProgramHandle;
     private static int _colorUniformHandle;
     private static int _positionAttributeHandle;
+    private static int _pointsizeAttributeHandle;
     private static int _MVPMatrixHandle;
 
     private final static String _vertexShaderCode =
             "uniform mat4 modelViewProjection;\n" + // A constant representing the combined model/view/projection matrix.
                     "attribute vec4 position;\n" +  // Per-vertex position information that we will pass in.
+                    "attribute float point_size;\n" +  // Per-vertex position information that we will pass in.
                     "void main() {\n" +             // The entry point for our vertex shader.
                     "    gl_Position = modelViewProjection\n" +    // gl_Position is a special variable used to store the final position.
                     "        * position;\n" +       // Multiply the vertex by the matrix to get the final point in normalized screen coordinates.
-                    "    gl_PointSize = 3.0;\n" + //pixel width of points
+                    "    gl_PointSize = point_size;\n" + //pixel width of points
                     "}\n";
     private final static String _fragmentShaderCode =
             "precision mediump float;\n" +        //we don't need high precision floats for fragments
@@ -68,6 +70,7 @@ public class GLManager {
         GLES20.glDeleteShader(vertex);
         GLES20.glDeleteShader(fragment);
         _positionAttributeHandle = GLES20.glGetAttribLocation(_glProgramHandle, "position");
+        _pointsizeAttributeHandle = GLES20.glGetAttribLocation(_glProgramHandle, "point_size");
         _colorUniformHandle = GLES20.glGetUniformLocation(_glProgramHandle, "color");
         _MVPMatrixHandle = GLES20.glGetUniformLocation(_glProgramHandle, "modelViewProjection");
         GLES20.glUseProgram(_glProgramHandle);
@@ -80,6 +83,14 @@ public class GLManager {
         final boolean TRANSPOSED = false;
         GLES20.glUniformMatrix4fv(_MVPMatrixHandle, COUNT, TRANSPOSED, modelViewMatrix, OFFSET);
         checkGLError("setModelViewProjection");
+    }
+
+    public static void draw(final Mesh mesh, final float[] modelViewMatrix, final float[] color, final float pointSize) {
+        setShaderColor(color);
+        setPointSize(pointSize);
+        uploadMesh(mesh._vertexBuffer);
+        setModelViewProjection(modelViewMatrix);
+        drawMesh(mesh._drawMode, mesh._vertexCount);
     }
 
     public static void draw(final Mesh mesh, final float[] modelViewMatrix, final float[] color) {
@@ -114,5 +125,10 @@ public class GLManager {
         final int COUNT = 1;
         GLES20.glUniform4fv(GLManager._colorUniformHandle, COUNT, color, OFFSET);
         checkGLError("setShaderColor");
+    }
+
+    private static void setPointSize(float pointSize) {
+        GLES20.glVertexAttrib1f(_pointsizeAttributeHandle, pointSize);
+        checkGLError("setPointSize");
     }
 }

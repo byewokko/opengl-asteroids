@@ -14,6 +14,7 @@ public class Game extends GLSurfaceView {
     private World _world = null;
     private Player _player = null;
     private GLBorder _border = null;
+    private InputManager _controls = new InputManager();
 
     public Game(final Context context) {
         super(context);
@@ -33,5 +34,13 @@ public class Game extends GLSurfaceView {
         setEGLContextClientVersion(2);
         _renderer = new GLRenderer(_world);
         setRenderer(_renderer);
+    }
+
+    public void setControls(final InputManager controls) {
+        _controls = controls;
+    }
+
+    public InputManager getInputs() {
+        return _controls;
     }
 }

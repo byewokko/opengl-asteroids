@@ -5,6 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.grimezupt.asteroidsopengl.entities.GLEntity;
+import com.grimezupt.asteroidsopengl.entities.Player;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -41,8 +42,13 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(final GL10 unused) {
+        input();
         update();
         render();
+    }
+
+    private void input() {
+        _world.input(_game.getInputs());
     }
 
     //trying a fixed time-step with accumulator, courtesy of

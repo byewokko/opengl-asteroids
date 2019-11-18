@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -12,8 +13,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         _game = new Game(this);
-        setContentView(_game);
+        setContentView(R.layout.activity_main);
+        InputManager controls = new TouchController(findViewById(R.id.gamepad));
+        _game = findViewById(R.id.game);
+        _game.setControls(controls);
     }
 
     @Override

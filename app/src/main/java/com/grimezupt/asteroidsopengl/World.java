@@ -14,8 +14,8 @@ import java.util.Collection;
 public class World {
     private static final String TAG = "Game";
     public static Game _game = null;
-    public static float WIDTH = 80f;
-    public static float HEIGHT = 80f;
+    public static float WIDTH = 160f;
+    public static float HEIGHT = 90f;
     private static final int STAR_COUNT = 50;
 
     public final ArrayList<GLEntity> _entities = new ArrayList<>();
@@ -60,5 +60,9 @@ public class World {
 
     public void addEntities(final Collection<GLEntity> entityCollection){
         _entities.addAll(entityCollection);
+    }
+
+    public void input(InputManager inputs) {
+        _player.input(inputs);
     }
 }

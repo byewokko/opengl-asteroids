@@ -16,7 +16,11 @@ public abstract class Utils {
     }
 
     public static double getVectorMagnitude(PointF point) {
-        return Math.sqrt(point.x*point.x + point.y*point.y);
+        return getVectorMagnitude(point.x, point.y);
+    }
+
+    public static double getVectorMagnitude(float x, float y) {
+        return Math.sqrt(x*x + y*y);
     }
 
     public static double getVectorMagnitude(Point point) {

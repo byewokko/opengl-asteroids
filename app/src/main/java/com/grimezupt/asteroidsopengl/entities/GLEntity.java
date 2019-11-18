@@ -12,6 +12,7 @@ import java.util.Objects;
 
 public class GLEntity {
     public static Game _game = null;
+    public static final float RADIANS = (float) (Math.PI / 180f);
     public static final float[] modelMatrix = new float[4*4];
     public static final float[] viewportModelMatrix = new float[4*4];
     public static final float[] rotationViewportModelMatrix = new float[4*4];

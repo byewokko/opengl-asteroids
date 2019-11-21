@@ -3,15 +3,12 @@ package com.grimezupt.asteroidsopengl.entities;
 import android.opengl.Matrix;
 
 import com.grimezupt.asteroidsopengl.Config;
-import com.grimezupt.asteroidsopengl.Game;
 import com.grimezupt.asteroidsopengl.GLManager;
-import com.grimezupt.asteroidsopengl.World;
 import com.grimezupt.asteroidsopengl.mesh.Mesh;
 
 import java.util.Objects;
 
-public class GLEntity {
-    public static Game _game = null;
+public class GLEntity extends Entity {
     public static final float RADIANS = (float) (Math.PI / 180f);
     public static final float[] modelMatrix = new float[4*4];
     public static final float[] viewportModelMatrix = new float[4*4];
@@ -34,11 +31,17 @@ public class GLEntity {
         setColors(Config.Colors.FOREGROUND);
     }
 
+    @Override
     public void update(double dt){
         _x += _velX * dt;
         _y += _velY * dt;
         _rotation += _velW * dt;
         _mesh.updateBounds();
+        wrap();
+        //TODO: set _width and _height here
+    }
+
+    void wrap() {
         if (left() > World.WIDTH){
             setRight(0);
         } else if (right() < 0){
@@ -49,9 +52,9 @@ public class GLEntity {
         } else if (top() < 0){
             setBottom(World.HEIGHT);
         }
-        //TODO: set _width and _height here
     }
 
+    @Override
     public void render(float[] viewportMatrix) {
         configureMatrix(viewportMatrix);
         GLManager.draw(_mesh, rotationViewportModelMatrix, _color);

@@ -1,24 +1,25 @@
 package com.grimezupt.asteroidsopengl.entities;
 
-import android.os.SystemClock;
-
 import com.grimezupt.asteroidsopengl.InputManager;
 import com.grimezupt.asteroidsopengl.mesh.Triangle;
-import com.grimezupt.asteroidsopengl.World;
 import com.grimezupt.asteroidsopengl.utils.Utils;
 
 public class Player extends GLEntity {
     private static final String TAG = "Player";
-    private static final float THRUST = 5f;
+    private static final float THRUST = 2.5f;
     private static final float DRAG = 0.995f;
     private static final float ROTATION_VELOCITY = 320f;
-    private static final float HALT_THRESHOLD = 0.1f;
+    private static final float MAX_VELOCITY = 200f;
+    private static final float SHOOTING_TIME_LIMIT = 0.25f;
+    private static final float RECOIL = 20;
+    private EntityPool<Projectile> _projectilePool = null;
     private float _horizontalFactor = 0f;
     private boolean _thrusting = false;
     private boolean _shooting = false;
+    private float _shootingTimer = 0f;
 
-    public Player(float x, float y) {
-        super();
+    public Player(EntityPool<Projectile> projectilePool, float x, float y) {
+        _projectilePool = projectilePool;
         _x = x;
         _y = y;
         _scale = 10f;
@@ -27,19 +28,32 @@ public class Player extends GLEntity {
 
     @Override
     public void update(double dt) {
+        _shootingTimer -= dt;
+        final float velocity = (float) Utils.getVectorMagnitude(_velX, _velY);
+        final float theta = _rotation * RADIANS;
+        thrust(velocity, theta);
+        shoot(theta);
         _rotation += _horizontalFactor * ROTATION_VELOCITY * dt;
-        if (_thrusting){
-            final float theta = _rotation * RADIANS;
+        _velX *= DRAG;
+        _velY *= DRAG;
+        super.update(dt);
+    }
+
+    private void thrust(final float velocity, final float theta) {
+        if (_thrusting && velocity < MAX_VELOCITY){
             _velX -= THRUST * Math.sin(theta);
             _velY += THRUST * Math.cos(theta);
         }
-        _velX *= DRAG;
-        _velY *= DRAG;
-        if (Utils.getVectorMagnitude(_velX, _velY) < HALT_THRESHOLD){
-            _velX = 0f;
-            _velY = 0f;
+    }
+
+    private void shoot(final float theta){
+        if (_shooting && _shootingTimer <= 0f) {
+            Projectile p = _projectilePool.pull();
+            p.activate(_x, _y, _velX, _velY, theta);
+            _shootingTimer = SHOOTING_TIME_LIMIT;
+            _velX += RECOIL * Math.sin(theta);
+            _velY -= RECOIL * Math.cos(theta);
         }
-        super.update(dt);
     }
 
     @Override

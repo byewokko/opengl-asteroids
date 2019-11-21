@@ -4,9 +4,11 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 
+import com.grimezupt.asteroidsopengl.entities.Entity;
 import com.grimezupt.asteroidsopengl.entities.GLBorder;
 import com.grimezupt.asteroidsopengl.entities.GLEntity;
 import com.grimezupt.asteroidsopengl.entities.Player;
+import com.grimezupt.asteroidsopengl.entities.World;
 
 public class Game extends GLSurfaceView {
     private static final String TAG = "Game";
@@ -27,13 +29,14 @@ public class Game extends GLSurfaceView {
     }
 
     private void init(){
-        GLEntity._game = this;
         GLRenderer._game = this;
-        World._game = this;
+        Entity._game = this;
         _world = new World();
+//        Entity._world = _world;
         setEGLContextClientVersion(2);
         _renderer = new GLRenderer(_world);
         setRenderer(_renderer);
+        _world.build();
     }
 
     public void setControls(final InputManager controls) {

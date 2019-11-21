@@ -5,7 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.grimezupt.asteroidsopengl.entities.GLEntity;
-import com.grimezupt.asteroidsopengl.entities.Player;
+import com.grimezupt.asteroidsopengl.entities.World;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -77,9 +77,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         final float near = 0f;
         final float far = 1f;
         Matrix.orthoM(_viewportMatrix, offset, left, right, bottom, top, near, far);
-        for (GLEntity e : _world._entities){
-            e.render(_viewportMatrix);
-        }
+        _world.render(_viewportMatrix);
     }
 
     public void setBgColor(float[] bgColor) {

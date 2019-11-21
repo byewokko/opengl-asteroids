@@ -1,9 +1,6 @@
 package com.grimezupt.asteroidsopengl.entities;
 
-import com.grimezupt.asteroidsopengl.Config;
-import com.grimezupt.asteroidsopengl.World;
 import com.grimezupt.asteroidsopengl.mesh.GLEquiPolygon;
-import com.grimezupt.asteroidsopengl.mesh.Triangle;
 import com.grimezupt.asteroidsopengl.utils.Random;
 
 public class Asteroid extends GLEntity {
@@ -30,11 +27,6 @@ public class Asteroid extends GLEntity {
     public void update(double dt) {
         super.update(dt);
 //        wrap();
-    }
-
-    private void wrap() {
-        _x %= World.WIDTH;
-        _y %= World.HEIGHT;
     }
 
     @Override

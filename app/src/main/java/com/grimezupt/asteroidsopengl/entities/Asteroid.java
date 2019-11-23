@@ -1,13 +1,15 @@
 package com.grimezupt.asteroidsopengl.entities;
 
-import com.grimezupt.asteroidsopengl.mesh.GLEquiPolygon;
+import android.opengl.GLES20;
+
+import com.grimezupt.asteroidsopengl.mesh.Mesh;
 import com.grimezupt.asteroidsopengl.utils.Random;
 
 public class Asteroid extends GLEntity {
-    private static final float DEFAULT_RADIUS = 10f;
-    private float _radius = DEFAULT_RADIUS;
+    private static final float DEFAULT_SCALE = 8;
 
-    public Asteroid(final float x, final float y, final int points, final float radius) {
+    public Asteroid(final float x, final float y, final int points) {
+        setScale(DEFAULT_SCALE);
         _x = x;
         _y = y;
         final float velocity = Random.between(10f, 15f);
@@ -15,12 +17,9 @@ public class Asteroid extends GLEntity {
         _velX = (float) (Math.cos(angle) * velocity);
         _velY = (float) (Math.sin(angle) * velocity);
         _velW = Random.between(-30f, 30f);
-        _radius = radius;
-        _mesh = GLEquiPolygon.build(points, radius);
-    }
-
-    public Asteroid(final float x, final float y, final int points){
-        this(x, y, points, DEFAULT_RADIUS);
+        final float[] vertices = Mesh.regularPolygonGeometry(points);
+        _mesh = new Mesh(vertices, GLES20.GL_LINES);
+        _mesh.applyAspectRatio();
     }
 
     @Override

@@ -32,7 +32,7 @@ public class World extends Entity {
 
 
     public World() {
-        _projectilePool = new EntityPool<Projectile>() {
+        _projectilePool = new EntityPool<Projectile>(EntityPool.FIXED_SIZE) {
             @Override
             Projectile createNew() {
                 return new Projectile();
@@ -44,7 +44,7 @@ public class World extends Entity {
         for (int i = 0; i < STAR_COUNT; i++){
             addEntity(Star.random(WIDTH, HEIGHT));
         }
-        _border = new GLBorder(0f, 0f, WIDTH, HEIGHT);
+        _border = new GLBorder(WIDTH/2f, HEIGHT/2f, WIDTH, HEIGHT);
         addEntity(_border);
         for (int points = 3; points <= 9; points++){
             addEntity(new Asteroid(Random.between(0, WIDTH),
@@ -55,7 +55,9 @@ public class World extends Entity {
         addEntity(_projectilePool);
         _player = new Player(_projectilePool, WIDTH /2f, HEIGHT /2f);
         addEntity(_player);
-        addEntity(new GLText("HELLO world", 0, 0));
+        final GLText text = new GLText("HELLO world", 0, 0);
+        text.setScale(4f);
+        addEntity(text);
     }
 
     @Override

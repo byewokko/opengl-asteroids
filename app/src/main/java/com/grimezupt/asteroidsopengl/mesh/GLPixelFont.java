@@ -1,8 +1,6 @@
-package com.grimezupt.asteroidsopengl;
+package com.grimezupt.asteroidsopengl.mesh;
 
 import android.opengl.GLES20;
-
-import com.grimezupt.asteroidsopengl.mesh.Mesh;
 
 import java.util.Arrays;
 
@@ -60,7 +58,10 @@ public class GLPixelFont {
             }
         }
         float[] clean = Arrays.copyOfRange(vertices, 0, i);
-        return new Mesh(clean, GLES20.GL_POINTS);
+        final Mesh temp = new Mesh(clean, GLES20.GL_POINTS);
+        temp.setOrigin(-1, -1, 0);
+        temp.applyAspectRatio();
+        return temp;
     }
 
     //FONT_DEFINITION contains most of basic ASCII characters 45-90:

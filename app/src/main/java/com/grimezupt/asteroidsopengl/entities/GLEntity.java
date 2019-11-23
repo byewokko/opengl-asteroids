@@ -5,6 +5,7 @@ import android.opengl.Matrix;
 import com.grimezupt.asteroidsopengl.Config;
 import com.grimezupt.asteroidsopengl.GLManager;
 import com.grimezupt.asteroidsopengl.mesh.Mesh;
+import com.grimezupt.asteroidsopengl.utils.Utils;
 
 import java.util.Objects;
 
@@ -21,7 +22,8 @@ public class GLEntity extends Entity {
     public float _width = 0f;
     public float _height = 0f;
     public float _depth = 0f;
-    public float _scale = 1f;
+    public float _xScale = 1f;
+    public float _yScale = 1f;
     public float _rotation = 0f;
     public float _velX = 0f;
     public float _velY = 0f;
@@ -36,7 +38,6 @@ public class GLEntity extends Entity {
         _x += _velX * dt;
         _y += _velY * dt;
         _rotation += _velW * dt;
-        _mesh.updateBounds();
         wrap();
         //TODO: set _width and _height here
     }
@@ -67,7 +68,7 @@ public class GLEntity extends Entity {
         Matrix.multiplyMM(viewportModelMatrix, OFFSET,
                 viewportMatrix, OFFSET, modelMatrix, OFFSET);
         Matrix.setRotateM(modelMatrix, OFFSET, _rotation, 0f, 0f, 1f);
-        Matrix.scaleM(modelMatrix, OFFSET, _scale, _scale, 1f);
+        Matrix.scaleM(modelMatrix, OFFSET, _xScale, _yScale, 1f);
         Matrix.multiplyMM(rotationViewportModelMatrix, OFFSET,
                 viewportModelMatrix, OFFSET, modelMatrix, OFFSET);
     }
@@ -76,7 +77,7 @@ public class GLEntity extends Entity {
 
     public void setColors(final float[] colors){
         Objects.requireNonNull(colors);
-        assert(colors.length >= 4);
+        Utils.require(colors.length >= 4);
         setColors(colors[0], colors[1], colors[2], colors[3]);
     }
 
@@ -117,5 +118,14 @@ public class GLEntity extends Entity {
 
     public void setBottom(final float yPosition) {
         _y = yPosition - _mesh.bottom();
+    }
+
+    public void setScale(final float xScale, final float yScale){
+        _xScale = xScale;
+        _yScale = yScale;
+    }
+
+    public void setScale(final float scale){
+        setScale(scale, scale);
     }
 }

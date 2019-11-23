@@ -4,7 +4,7 @@ import android.opengl.Matrix;
 
 import com.grimezupt.asteroidsopengl.Config;
 import com.grimezupt.asteroidsopengl.GLManager;
-import com.grimezupt.asteroidsopengl.GLPixelFont;
+import com.grimezupt.asteroidsopengl.mesh.GLPixelFont;
 import com.grimezupt.asteroidsopengl.mesh.Mesh;
 
 public class GLText extends GLEntity {
@@ -25,7 +25,7 @@ public class GLText extends GLEntity {
         setString(s);
         _x = x;
         _y = y;
-        setScale(0.5f);
+        setScale(1f);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class GLText extends GLEntity {
             if(_meshes[i] == null){ continue; }
             Matrix.setIdentityM(modelMatrix, OFFSET); //reset model matrix
             Matrix.translateM(modelMatrix, OFFSET, _x + (_glyphWidth+_spacing)*i, _y, _depth);
-            Matrix.scaleM(modelMatrix, OFFSET, _scale, _scale, 1f);
+            Matrix.scaleM(modelMatrix, OFFSET, _xScale, _yScale, 1f);
             Matrix.multiplyMM(viewportModelMatrix, OFFSET, viewportMatrix, OFFSET, modelMatrix, OFFSET);
             GLManager.draw(_meshes[i], viewportModelMatrix, _color, _pointSize);
         }
@@ -47,13 +47,13 @@ public class GLText extends GLEntity {
     }
 
     public void setScale(float factor){
-        _scale = factor;
-        _spacing = GLYPH_SPACING*_scale;
-        _glyphWidth = GLYPH_WIDTH*_scale;
-        _glyphHeight = GLYPH_HEIGHT*_scale;
+        super.setScale(factor);
+        _spacing = GLYPH_SPACING * _xScale;
+//        _glyphWidth = GLYPH_WIDTH*_xScale;
+//        _glyphHeight = GLYPH_HEIGHT*_yScale;
         _height = _glyphHeight;
         _width = (_glyphWidth+_spacing)*_meshes.length;
-        _pointSize = POINT_SIZE*_scale;
+        _pointSize = POINT_SIZE;
     }
 
     public void setString(final String s){

@@ -15,8 +15,8 @@ public class Player extends GLEntity {
     private static final float DRAG = 0.995f;
     private static final float ROTATION_VELOCITY = 320f;
     private static final float MAX_VELOCITY = 200f;
-    private static final float SHOOTING_TIME_LIMIT = 0.25f;
-    private static final float RECOIL = 20;
+    private static final float SHOOTING_TIME_LIMIT = 0.1f;
+    private static final float RECOIL = 12f;
     private final Mesh _bbMesh;
     private EntityPool<Projectile> _projectilePool = null;
     private float _horizontalFactor = 0f;

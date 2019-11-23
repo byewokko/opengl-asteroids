@@ -8,8 +8,10 @@ import com.grimezupt.asteroidsopengl.mesh.Mesh;
 public class Projectile extends GLEntity implements Suspendable {
     private static final float SIZE = 10f;
     private static final float FIRE_VELOCITY = 100f;
+    private static final float LIFESPAN = 3f;
     private static Mesh mesh = null; // pool
     private boolean _suspended = true;
+    private double _lifespan = 0d;
 
     public Projectile() {
         initMesh();
@@ -29,6 +31,16 @@ public class Projectile extends GLEntity implements Suspendable {
         _velX = (float) (velX - FIRE_VELOCITY * Math.sin(theta));
         _velY = (float) (velY + FIRE_VELOCITY * Math.cos(theta));
         _suspended = false;
+        _lifespan = LIFESPAN;
+    }
+
+    @Override
+    public void update(double dt) {
+        super.update(dt);
+        _lifespan -= dt;
+        if (_lifespan <= 0){
+            destroy();
+        }
     }
 
     @Override
@@ -41,10 +53,10 @@ public class Projectile extends GLEntity implements Suspendable {
         _suspended = true;
     }
 
-    void wrap() {
-        if (left() > World.WIDTH || right() < 0 || bottom() > World.HEIGHT || top() < 0){
-            destroy();
-        }
+    @Override
+    public void onCollision(GLEntity that) {
+        super.onCollision(that);
+        destroy();
     }
 
     @Override

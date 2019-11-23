@@ -3,9 +3,14 @@ package com.grimezupt.asteroidsopengl;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import com.grimezupt.asteroidsopengl.entities.GLEntity;
+import com.grimezupt.asteroidsopengl.entities.GLText;
 import com.grimezupt.asteroidsopengl.entities.World;
+import com.grimezupt.asteroidsopengl.utils.AverageQueue;
+
+import java.util.Locale;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -23,10 +28,14 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     private float[] _bgColor;
     private long lastFrame;
+    private GLText _fpsText = null;
+    private static AverageQueue _fpsQueue = new AverageQueue(10);
 
     public GLRenderer(World world) {
         _world = world;
         lastFrame = System.nanoTime();
+        _fpsText = new GLText("HELLO world", 5, 5);
+        _fpsText.setScale(2f);
     }
 
     @Override
@@ -65,6 +74,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             _world.update(dt);
             accumulator -= dt;
         }
+        _fpsQueue.put((float) frameTime);
+        _fpsText.setString(String.format(Locale.ENGLISH,"%.0ffps", 1d/_fpsQueue.readAverage()));
     }
 
     public void render() {
@@ -78,6 +89,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         final float far = 1f;
         Matrix.orthoM(_viewportMatrix, offset, left, right, bottom, top, near, far);
         _world.render(_viewportMatrix);
+        _fpsText.render(_viewportMatrix);
     }
 
     public void setBgColor(float[] bgColor) {

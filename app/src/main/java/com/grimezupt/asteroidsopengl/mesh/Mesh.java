@@ -106,6 +106,7 @@ public class Mesh {
     public float centerY(){
         return _min._y + _height * 0.5f;
     }
+
     public void normalize(){
         final double inverseW = (_width  == 0.0) ? 0.0 : 1/_width;
         final double inverseH = (_height == 0.0) ? 0.0 : 1/_height;
@@ -145,6 +146,28 @@ public class Mesh {
         scale(w*0.5, h*0.5, 1.0);
         Utils.require(Math.abs(w-_width) < Float.MIN_NORMAL && Math.abs(h-_height) < Float.MIN_NORMAL,
                 "incorrect width / height after scaling!");
+    }
+
+    private void rotate(final int axis, final double theta) {
+        Utils.require(axis == X || axis == Y || axis == Z);
+        final double sinTheta = Math.sin(theta);
+        final double cosTheta = Math.cos(theta);
+        for (int i = 0; i < _vertexCount * COORDS_PER_VERTEX; i += COORDS_PER_VERTEX) {
+            final double x = _vertexBuffer.get(i + X);
+            final double y = _vertexBuffer.get(i + Y);
+            final double z = _vertexBuffer.get(i + Z);
+            if (axis == Z) {
+                _vertexBuffer.put(i + X, (float) (x * cosTheta - y * sinTheta));
+                _vertexBuffer.put(i + Y, (float) (y * cosTheta + x * sinTheta));
+            } else if (axis == Y) {
+                _vertexBuffer.put(i + X, (float) (x * cosTheta - z * sinTheta));
+                _vertexBuffer.put(i + Z, (float) (z * cosTheta + x * sinTheta));
+            } else if (axis == X) {
+                _vertexBuffer.put(i + Y, (float) (y * cosTheta - z * sinTheta));
+                _vertexBuffer.put(i + Z, (float) (z * cosTheta + y * sinTheta));
+            }
+        }
+        updateBounds();
     }
 
     public void saveAspectRatio() {

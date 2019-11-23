@@ -1,23 +1,19 @@
 package com.grimezupt.asteroidsopengl.entities;
 
+import android.util.Log;
+
 import com.grimezupt.asteroidsopengl.Game;
 import com.grimezupt.asteroidsopengl.InputManager;
-import com.grimezupt.asteroidsopengl.entities.Asteroid;
-import com.grimezupt.asteroidsopengl.entities.EntityPool;
-import com.grimezupt.asteroidsopengl.entities.GLBorder;
-import com.grimezupt.asteroidsopengl.entities.GLEntity;
-import com.grimezupt.asteroidsopengl.entities.GLText;
-import com.grimezupt.asteroidsopengl.entities.Player;
-import com.grimezupt.asteroidsopengl.entities.Projectile;
-import com.grimezupt.asteroidsopengl.entities.Star;
+import com.grimezupt.asteroidsopengl.utils.AverageQueue;
 import com.grimezupt.asteroidsopengl.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 
 public class World extends Entity {
     private static final String TAG = "World";
-    private static final int PROJECTILE_POOL_SIZE = 5;
+    private static final int PROJECTILE_POOL_SIZE = 3;
     public static Game _game = null;
     public static float WIDTH = 160f;
     public static float HEIGHT = 90f;
@@ -28,7 +24,6 @@ public class World extends Entity {
 
     private Player _player = null;
     private GLBorder _border = null;
-    private double dt;
 
 
     public World() {
@@ -55,9 +50,6 @@ public class World extends Entity {
         addEntity(_projectilePool);
         _player = new Player(_projectilePool, WIDTH /2f, HEIGHT /2f);
         addEntity(_player);
-        final GLText text = new GLText("HELLO world", 0, 0);
-        text.setScale(4f);
-        addEntity(text);
     }
 
     @Override

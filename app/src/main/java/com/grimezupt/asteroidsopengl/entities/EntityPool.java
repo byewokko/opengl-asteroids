@@ -21,7 +21,6 @@ public abstract class EntityPool<E extends GLEntity & Suspendable> extends Entit
     private final int _sizeType;
     private ArrayList<E> _suspendedEntities = new ArrayList<>();
     private ArrayList<E> _activeEntities = new ArrayList<>();
-    private final Constructor<? extends E> _constructor = null;
 
     public EntityPool(int sizeType) {
         _sizeType = sizeType;
@@ -42,7 +41,7 @@ public abstract class EntityPool<E extends GLEntity & Suspendable> extends Entit
             if (_sizeType == 1) {
                 entity = createNew();
             } else {
-                Log.e(TAG, "Pool is empty, cannot extend fixed size pool.");
+                Log.d(TAG, "Pool is empty, cannot extend fixed size pool.");
                 return null;
             }
         } else {

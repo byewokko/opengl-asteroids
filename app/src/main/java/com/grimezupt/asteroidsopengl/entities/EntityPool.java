@@ -4,15 +4,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.grimezupt.asteroidsopengl.entities.GLEntity;
-import com.grimezupt.asteroidsopengl.entities.Suspendable;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Objects;
-import java.util.function.Supplier;
 
 public abstract class EntityPool<E extends GLEntity & Suspendable> extends Entity {
     private static final String TAG = "EntityPool";
@@ -20,7 +13,7 @@ public abstract class EntityPool<E extends GLEntity & Suspendable> extends Entit
     public static final int DYNAMIC_SIZE = 1;
     private final int _sizeType;
     private ArrayList<E> _suspendedEntities = new ArrayList<>();
-    private ArrayList<E> _activeEntities = new ArrayList<>();
+    public ArrayList<E> _activeEntities = new ArrayList<>();
 
     public EntityPool(int sizeType) {
         _sizeType = sizeType;
@@ -41,7 +34,6 @@ public abstract class EntityPool<E extends GLEntity & Suspendable> extends Entit
             if (_sizeType == 1) {
                 entity = createNew();
             } else {
-                Log.d(TAG, "Pool is empty, cannot extend fixed size pool.");
                 return null;
             }
         } else {
@@ -51,20 +43,20 @@ public abstract class EntityPool<E extends GLEntity & Suspendable> extends Entit
         return entity;
     }
 
-    public void suspend(E entity){
-        _activeEntities.remove(entity);
-        _suspendedEntities.add(entity);
-    }
-
-    @Override
-    public void update(final double dt){
+    public void removeSuspended(){
         for (Iterator<E> iterator = _activeEntities.iterator(); iterator.hasNext();){
             E e = iterator.next();
-            e.update(dt);
             if (e.isSuspended()){
                 _suspendedEntities.add(e);
                 iterator.remove();
             }
+        }
+    }
+
+    @Override
+    public void update(final double dt){
+        for (E e : _activeEntities){
+            e.update(dt);
         }
     }
 

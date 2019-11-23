@@ -1,6 +1,8 @@
 package com.grimezupt.asteroidsopengl.entities;
 
+import android.graphics.PointF;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import com.grimezupt.asteroidsopengl.Config;
 import com.grimezupt.asteroidsopengl.GLManager;
@@ -73,6 +75,65 @@ public class GLEntity extends Entity {
                 viewportModelMatrix, OFFSET, modelMatrix, OFFSET);
     }
 
+    public boolean isColliding(final GLEntity that){
+        if (this == that){
+            throw new AssertionError("Can't test entity against itself.");
+        }
+        return isAABBOverlapping(this, that);
+    }
+
+    public float centerX() {
+        return _x; //assumes our mesh has been centered on [0,0] (normalized)
+    }
+
+    public float centerY() {
+        return _y; //assumes our mesh has been centered on [0,0] (normalized)
+    }
+
+    //axis-aligned intersection test
+    static final PointF overlap = new PointF( 0 , 0 ); //Q&D PointF pool for collision detection. Assumes single threading.
+    @SuppressWarnings("UnusedReturnValue")
+    static boolean getOverlap(final GLEntity a, final GLEntity b, final PointF overlap) {
+        overlap.x = 0.0f;
+        overlap.y = 0.0f;
+        final float centerDeltaX = a.centerX() - b.centerX();
+        final float halfWidths = (a._width + b._width) * 0.5f;
+        float dx = Math.abs(centerDeltaX); //cache the abs, we need it twice
+
+        if (dx > halfWidths) return false ; //no overlap on x == no collision
+
+        final float centerDeltaY = a.centerY() - b.centerY();
+        final float halfHeights = (a._height + b._height) * 0.5f;
+        float dy = Math.abs(centerDeltaY);
+
+        if (dy > halfHeights) return false ; //no overlap on y == no collision
+
+        dx = halfWidths - dx; //overlap on x
+        dy = halfHeights - dy; //overlap on y
+        if (dy < dx) {
+            overlap.y = (centerDeltaY < 0 ) ? -dy : dy;
+        } else if (dy > dx) {
+            overlap.x = (centerDeltaX < 0 ) ? -dx : dx;
+        } else {
+            overlap.x = (centerDeltaX < 0 ) ? -dx : dx;
+            overlap.y = (centerDeltaY < 0 ) ? -dy : dy;
+        }
+        return true ;
+    }
+    //Some good reading on bounding-box intersection tests:
+    //https://gamedev.stackexchange.com/questions/586/what-is-the-fastest-way-to-work-out-2d-bounding-box-intersection
+    static boolean isAABBOverlapping(final GLEntity a, final GLEntity b) {
+//        Log.d(TAG, String.format("%s  %s  %s  %s", a.left(), a.right(), a.top(), a.bottom()));
+//        Log.d(TAG, String.format("%s  %s  %s  %s", b.left(), b.right(), b.top(), b.bottom()));
+//        Log.d(TAG, String.format("%s  %s  %s  %s",
+//                a.right() <= b.left(), b.right() <= a.left(),
+//                a.bottom() <= b.top(), b.bottom() <= a.top()));
+        return !(a.right() <= b.left()
+                || b.right() <= a.left()
+                || a.bottom() >= b.top() // TODO: bottom and top is inverted somewhere. FIX!!
+                || b.bottom() >= a.top());
+    }
+
     public void onCollision(final GLEntity that){}
 
     public void setColors(final float[] colors){
@@ -89,35 +150,35 @@ public class GLEntity extends Entity {
     }
 
     public float left() {
-        return _x+_mesh.left();
+        return _x+_mesh.left()*_xScale;
     }
 
     public float right() {
-        return _x+_mesh.right();
+        return _x+_mesh.right()*_xScale;
     }
 
     public float top() {
-        return _y+_mesh.top();
+        return _y+_mesh.top()*_yScale;
     }
 
-    public  float bottom() {
-        return _y+_mesh.bottom();
+    public float bottom() {
+        return _y+_mesh.bottom()*_yScale;
     }
 
     public void setLeft(final float xPosition) {
-        _x = xPosition - _mesh.left();
+        _x = xPosition - _mesh.left()*_xScale;
     }
 
     public void setRight(final float xPosition) {
-        _x = xPosition - _mesh.right();
+        _x = xPosition - _mesh.right()*_xScale;
     }
 
     public void setTop(final float yPosition) {
-        _y = yPosition - _mesh.top();
+        _y = yPosition - _mesh.top()*_yScale;
     }
 
     public void setBottom(final float yPosition) {
-        _y = yPosition - _mesh.bottom();
+        _y = yPosition - _mesh.bottom()*_yScale;
     }
 
     public void setScale(final float xScale, final float yScale){

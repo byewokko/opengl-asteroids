@@ -2,7 +2,7 @@ package com.grimezupt.asteroidsopengl;
 
 public abstract class Config {
     public static abstract class Colors {
-        public static final float[] BACKGROUND = {0.7f, 0.1f, 0.4f, 1f};
+        public static final float[] BACKGROUND = {0.6f, 0.05f, 0.4f, 1f};
         public static final float[] FOREGROUND = {0.9f, 0.9f, 0.1f, 1f};
         public static final float[] HIGHLIGHT = {0.3f, 0.1f, 0.9f, 1f};
     }

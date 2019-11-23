@@ -3,12 +3,10 @@ package com.grimezupt.asteroidsopengl;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.util.Log;
 
-import com.grimezupt.asteroidsopengl.entities.GLEntity;
 import com.grimezupt.asteroidsopengl.entities.GLText;
 import com.grimezupt.asteroidsopengl.entities.World;
-import com.grimezupt.asteroidsopengl.utils.AverageQueue;
+import com.grimezupt.asteroidsopengl.utils.SignalWindow;
 
 import java.util.Locale;
 
@@ -29,7 +27,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private float[] _bgColor;
     private long lastFrame;
     private GLText _fpsText = null;
-    private static AverageQueue _fpsQueue = new AverageQueue(10);
+    private static SignalWindow _fpsQueue = new SignalWindow(10);
 
     public GLRenderer(World world) {
         _world = world;

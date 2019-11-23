@@ -1,12 +1,12 @@
 package com.grimezupt.asteroidsopengl.utils;
 
-public class AverageQueue {
+public class SignalWindow {
 
     private float [] _data;
     private int _pointer;
     public final int _size;
 
-    public AverageQueue(int size) {
+    public SignalWindow(int size) {
         Utils.require(size > 0);
         _size = size;
         _data = new float[size];

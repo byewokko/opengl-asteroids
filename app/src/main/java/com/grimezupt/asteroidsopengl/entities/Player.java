@@ -15,9 +15,8 @@ public class Player extends GLEntity {
     private static final float DRAG = 0.995f;
     private static final float ROTATION_VELOCITY = 320f;
     private static final float MAX_VELOCITY = 200f;
-    private static final float SHOOTING_TIME_LIMIT = 0.1f;
+    private static final float SHOOTING_COOLDOWN = 0.1f;
     private static final float RECOIL = 12f;
-    private final Mesh _bbMesh;
     private EntityPool<Projectile> _projectilePool = null;
     private float _horizontalFactor = 0f;
     private boolean _thrusting = false;
@@ -33,8 +32,6 @@ public class Player extends GLEntity {
         _mesh.applyAspectRatio();
         _width = _mesh._width * _xScale;
         _height = _mesh._height * _yScale;
-        _bbMesh = new Mesh(Mesh.squareGeometry(), GLES20.GL_LINES);
-        _bbMesh.scale(_mesh._aspectWidth, _mesh._aspectHeight, 1f);
     }
 
     @Override
@@ -62,7 +59,7 @@ public class Player extends GLEntity {
             Projectile p = _projectilePool.pull();
             if (p != null) {
                 p.activate(_x, _y, _velX, _velY, theta);
-                _shootingTimer = SHOOTING_TIME_LIMIT;
+                _shootingTimer = SHOOTING_COOLDOWN;
                 _velX += RECOIL * Math.sin(theta);
                 _velY -= RECOIL * Math.cos(theta);
             }
@@ -72,7 +69,6 @@ public class Player extends GLEntity {
     @Override
     public void render(float[] viewportMatrix) {
         super.render(viewportMatrix);
-        GLManager.draw(_bbMesh, rotationViewportModelMatrix, _color);
     }
 
     public void input(InputManager inputs) {

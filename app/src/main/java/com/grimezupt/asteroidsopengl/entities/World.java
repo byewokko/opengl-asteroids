@@ -1,25 +1,24 @@
 package com.grimezupt.asteroidsopengl.entities;
 
-import android.util.Log;
-
 import com.grimezupt.asteroidsopengl.Game;
 import com.grimezupt.asteroidsopengl.InputManager;
-import com.grimezupt.asteroidsopengl.utils.AverageQueue;
 import com.grimezupt.asteroidsopengl.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Locale;
+import java.util.Objects;
 
 public class World extends Entity {
     private static final String TAG = "World";
     private static final int PROJECTILE_POOL_SIZE = 3;
+    private static final int ASTEROID_COUNT = 8;
     public static Game _game = null;
     public static float WIDTH = 160f;
     public static float HEIGHT = 90f;
     private static final int STAR_COUNT = 50;
 
     public final ArrayList<Entity> _entities = new ArrayList<>();
+    public final EntityPool<Asteroid> _asteroidPool;
     public final EntityPool<Projectile> _projectilePool;
 
     private Player _player = null;
@@ -33,6 +32,12 @@ public class World extends Entity {
                 return new Projectile();
             }
         };
+        _asteroidPool = new EntityPool<Asteroid>(EntityPool.DYNAMIC_SIZE) {
+            @Override
+            Asteroid createNew() {
+                return new Asteroid();
+            }
+        };
     }
 
     public void build() {
@@ -41,11 +46,19 @@ public class World extends Entity {
         }
         _border = new GLBorder(WIDTH/2f, HEIGHT/2f, WIDTH, HEIGHT);
         addEntity(_border);
+//        for (int points = 3; points <= 9; points++){
+//            addEntity(new Asteroid(Random.between(0, WIDTH),
+//                    Random.between(0, HEIGHT),
+//                    points));
+//        }
+        _asteroidPool.init(ASTEROID_COUNT*3);
         for (int points = 3; points <= 9; points++){
-            addEntity(new Asteroid(Random.between(0, WIDTH),
+            Asteroid a = _asteroidPool.pull();
+            Objects.requireNonNull(a).activate(Random.between(0, WIDTH),
                     Random.between(0, HEIGHT),
-                    points));
+                    points);
         }
+        addEntity(_asteroidPool);
         _projectilePool.init(PROJECTILE_POOL_SIZE);
         addEntity(_projectilePool);
         _player = new Player(_projectilePool, WIDTH /2f, HEIGHT /2f);
@@ -56,6 +69,21 @@ public class World extends Entity {
     public void update(double dt){
         for (Entity e : _entities){
             e.update(dt);
+        }
+        collisionDetection();
+        _asteroidPool.removeSuspended();
+        _projectilePool.removeSuspended();
+    }
+
+    private void collisionDetection() {
+        for (Projectile p : _projectilePool._activeEntities){
+            for (Asteroid a : _asteroidPool._activeEntities){
+                if (p.isColliding(a)){
+                    p.onCollision(a);
+                    a.onCollision(p);
+                    break; // bullet can damage only one asteroid
+                }
+            }
         }
     }
 

@@ -95,10 +95,10 @@ public class Mesh {
         return _max._x;
     }
     public float bottom(){
-        return _min._y;
+        return _max._y;
     }
     public float top(){
-        return _max._y;
+        return _min._y;
     }
     public float centerX(){
         return _min._x + _width * 0.5f;

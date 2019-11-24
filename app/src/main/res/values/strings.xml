@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Asteroids OpenGL</string>
+    <string name="gamepad_btn_left">◀</string>
+    <string name="gamepad_btn_right">▶</string>
+    <string name="gamepad_btn_b">•</string>
+    <string name="gamepad_btn_a">▲</string>
 </resources>

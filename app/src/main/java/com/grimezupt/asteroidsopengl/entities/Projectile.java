@@ -28,8 +28,8 @@ public class Projectile extends GLEntity implements Suspendable {
     public void activate(final float x, final float y, final float velX, final float velY, final float theta){
         _x = x;
         _y = y;
-        _velX = (float) (velX - FIRE_VELOCITY * Math.sin(theta));
-        _velY = (float) (velY + FIRE_VELOCITY * Math.cos(theta));
+        _velX = (float) (velX + FIRE_VELOCITY * Math.sin(theta));
+        _velY = (float) (velY - FIRE_VELOCITY * Math.cos(theta));
         _suspended = false;
         _lifespan = LIFESPAN;
     }

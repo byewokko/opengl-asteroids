@@ -15,7 +15,7 @@ public class Player extends GLEntity {
     private static final float DRAG = 0.995f;
     private static final float ROTATION_VELOCITY = 320f;
     private static final float MAX_VELOCITY = 200f;
-    private static final float SHOOTING_COOLDOWN = 0.1f;
+    private static final float SHOOTING_COOLDOWN = 0.25f;
     private static final float RECOIL = 12f;
     private EntityPool<Projectile> _projectilePool = null;
     private float _horizontalFactor = 0f;
@@ -27,6 +27,7 @@ public class Player extends GLEntity {
         _projectilePool = projectilePool;
         _x = x;
         _y = y;
+        _rotation = 0f;
         setScale(SIZE, SIZE);
         _mesh = new Triangle();
         _mesh.applyAspectRatio();
@@ -49,8 +50,8 @@ public class Player extends GLEntity {
 
     private void thrust(final float velocity, final float theta) {
         if (_thrusting && velocity < MAX_VELOCITY){
-            _velX -= THRUST * Math.sin(theta);
-            _velY += THRUST * Math.cos(theta);
+            _velX += THRUST * Math.sin(theta);
+            _velY -= THRUST * Math.cos(theta);
         }
     }
 
@@ -60,8 +61,8 @@ public class Player extends GLEntity {
             if (p != null) {
                 p.activate(_x, _y, _velX, _velY, theta);
                 _shootingTimer = SHOOTING_COOLDOWN;
-                _velX += RECOIL * Math.sin(theta);
-                _velY -= RECOIL * Math.cos(theta);
+                _velX -= RECOIL * Math.sin(theta);
+                _velY += RECOIL * Math.cos(theta);
             }
         }
     }
@@ -73,7 +74,7 @@ public class Player extends GLEntity {
 
     public void input(InputManager inputs) {
         _horizontalFactor = inputs._horizontalFactor;
-        _thrusting = inputs._pressingB;
-        _shooting = inputs._pressingA;
+        _thrusting = inputs._pressingA;
+        _shooting = inputs._pressingB;
     }
 }

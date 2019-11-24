@@ -50,10 +50,10 @@ public class GLEntity extends Entity {
         } else if (right() < 0){
             setLeft(World.WIDTH);
         }
-        if (bottom() > World.HEIGHT){
-            setTop(0);
-        } else if (top() < 0){
-            setBottom(World.HEIGHT);
+        if (top() > World.HEIGHT){
+            setBottom(0);
+        } else if (bottom() < 0){
+            setTop(World.HEIGHT);
         }
     }
 
@@ -130,8 +130,10 @@ public class GLEntity extends Entity {
 //                a.bottom() <= b.top(), b.bottom() <= a.top()));
         return !(a.right() <= b.left()
                 || b.right() <= a.left()
-                || a.bottom() >= b.top() // TODO: bottom and top is inverted somewhere. FIX!!
-                || b.bottom() >= a.top());
+//                || a.bottom() >= b.top() // TODO: bottom and top is inverted somewhere. FIX!!
+//                || b.bottom() >= a.top());
+                || a.bottom() <= b.top()
+                || b.bottom() <= a.top());
     }
 
     public void onCollision(final GLEntity that){}

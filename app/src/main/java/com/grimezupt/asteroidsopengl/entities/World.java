@@ -35,7 +35,9 @@ public class World extends Entity {
         _asteroidPool = new EntityPool<Asteroid>(EntityPool.DYNAMIC_SIZE) {
             @Override
             Asteroid createNew() {
-                return new Asteroid();
+                Asteroid a = new Asteroid();
+                a.setPool(_asteroidPool);
+                return a;
             }
         };
     }

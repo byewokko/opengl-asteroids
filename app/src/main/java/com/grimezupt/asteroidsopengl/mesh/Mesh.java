@@ -145,7 +145,7 @@ public class Mesh {
         normalize();
         scale(w*0.5, h*0.5, 1.0);
         Utils.require(Math.abs(w-_width) < Float.MIN_NORMAL && Math.abs(h-_height) < Float.MIN_NORMAL,
-                "incorrect width / height after scaling!");
+                String.format("incorrect width / height after scaling: %s x %s", _width, _height));
     }
 
     private void rotate(final int axis, final double theta) {
@@ -230,5 +230,18 @@ public class Mesh {
             _vertexBuffer.put(i+Z, (float)nz);
         }
         updateBounds();
+    }
+
+    public void setVertexAverageOrigin(){
+        float x = 0, y = 0, z = 0;
+        for (int i = 0; i < _vertexCount * COORDS_PER_VERTEX; i += COORDS_PER_VERTEX) {
+            x += _vertexBuffer.get(i + X);
+            y += _vertexBuffer.get(i + Y);
+            z += _vertexBuffer.get(i + Z);
+        }
+        x /= _vertexCount;
+        y /= _vertexCount;
+        z /= _vertexCount;
+        setOrigin(x, y, z);
     }
 }

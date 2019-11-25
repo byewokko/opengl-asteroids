@@ -2,7 +2,6 @@ package com.grimezupt.asteroidsopengl.entities;
 
 import android.graphics.PointF;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import com.grimezupt.asteroidsopengl.Config;
 import com.grimezupt.asteroidsopengl.GLManager;
@@ -24,12 +23,13 @@ public class GLEntity extends Entity {
     public float _width = 0f;
     public float _height = 0f;
     public float _depth = 0f;
-    public float _xScale = 1f;
-    public float _yScale = 1f;
+    public float _scale = 1f;
     public float _rotation = 0f;
     public float _velX = 0f;
     public float _velY = 0f;
     public float _velW = 0f; //angular velocity
+
+    public float _collisionRadius = 0f;
 
     public GLEntity() {
         setColors(Config.Colors.FOREGROUND);
@@ -70,7 +70,7 @@ public class GLEntity extends Entity {
         Matrix.multiplyMM(viewportModelMatrix, OFFSET,
                 viewportMatrix, OFFSET, modelMatrix, OFFSET);
         Matrix.setRotateM(modelMatrix, OFFSET, _rotation, 0f, 0f, 1f);
-        Matrix.scaleM(modelMatrix, OFFSET, _xScale, _yScale, 1f);
+        Matrix.scaleM(modelMatrix, OFFSET, _scale, _scale, 1f);
         Matrix.multiplyMM(rotationViewportModelMatrix, OFFSET,
                 viewportModelMatrix, OFFSET, modelMatrix, OFFSET);
     }
@@ -152,43 +152,43 @@ public class GLEntity extends Entity {
     }
 
     public float left() {
-        return _x+_mesh.left()*_xScale;
+        return _x+_mesh.left()* _scale;
     }
 
     public float right() {
-        return _x+_mesh.right()*_xScale;
+        return _x+_mesh.right()* _scale;
     }
 
     public float top() {
-        return _y+_mesh.top()*_yScale;
+        return _y+_mesh.top()*_scale;
     }
 
     public float bottom() {
-        return _y+_mesh.bottom()*_yScale;
+        return _y+_mesh.bottom()*_scale;
     }
 
     public void setLeft(final float xPosition) {
-        _x = xPosition - _mesh.left()*_xScale;
+        _x = xPosition - _mesh.left()* _scale;
     }
 
     public void setRight(final float xPosition) {
-        _x = xPosition - _mesh.right()*_xScale;
+        _x = xPosition - _mesh.right()* _scale;
     }
 
     public void setTop(final float yPosition) {
-        _y = yPosition - _mesh.top()*_yScale;
+        _y = yPosition - _mesh.top()*_scale;
     }
 
     public void setBottom(final float yPosition) {
-        _y = yPosition - _mesh.bottom()*_yScale;
+        _y = yPosition - _mesh.bottom()*_scale;
     }
 
-    public void setScale(final float xScale, final float yScale){
-        _xScale = xScale;
-        _yScale = yScale;
+    public void setCenter(final float x, final float y) {
+        _x = x;
+        _y = y;
     }
 
     public void setScale(final float scale){
-        setScale(scale, scale);
+        _scale = scale;
     }
 }

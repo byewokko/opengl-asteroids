@@ -46,6 +46,8 @@ public class World extends Entity {
         for (int i = 0; i < STAR_COUNT; i++){
             addEntity(Star.random(WIDTH, HEIGHT));
         }
+        _player = new Player(_projectilePool, WIDTH /2f, HEIGHT /2f);
+        addEntity(_player);
         _border = new GLBorder(WIDTH/2f, HEIGHT/2f, WIDTH, HEIGHT);
         addEntity(_border);
 //        for (int points = 3; points <= 9; points++){
@@ -63,8 +65,6 @@ public class World extends Entity {
         addEntity(_asteroidPool);
         _projectilePool.init(PROJECTILE_POOL_SIZE);
         addEntity(_projectilePool);
-        _player = new Player(_projectilePool, WIDTH /2f, HEIGHT /2f);
-        addEntity(_player);
     }
 
     @Override
@@ -78,6 +78,7 @@ public class World extends Entity {
     }
 
     private void collisionDetection() {
+        // projectiles vs. asteroids
         for (Projectile p : _projectilePool._activeEntities){
             for (Asteroid a : _asteroidPool._activeEntities){
                 if (p.isColliding(a)){
@@ -85,6 +86,14 @@ public class World extends Entity {
                     a.onCollision(p);
                     break; // bullet can damage only one asteroid
                 }
+            }
+        }
+        // player vs. asteroids
+        for (Asteroid a : _asteroidPool._activeEntities){
+            if (_player.isColliding(a)){
+                _player.onCollision(a);
+                a.onCollision(_player);
+                break;
             }
         }
     }

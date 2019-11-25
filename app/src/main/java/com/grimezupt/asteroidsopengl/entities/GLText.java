@@ -35,7 +35,7 @@ public class GLText extends GLEntity {
             if(_meshes[i] == null){ continue; }
             Matrix.setIdentityM(modelMatrix, OFFSET); //reset model matrix
             Matrix.translateM(modelMatrix, OFFSET, _x + (_glyphWidth+_spacing)*i, _y, _depth);
-            Matrix.scaleM(modelMatrix, OFFSET, _xScale, _yScale, 1f);
+            Matrix.scaleM(modelMatrix, OFFSET, _scale, _scale, 1f);
             Matrix.multiplyMM(viewportModelMatrix, OFFSET, viewportMatrix, OFFSET, modelMatrix, OFFSET);
             GLManager.draw(_meshes[i], viewportModelMatrix, _color, _pointSize);
         }
@@ -48,8 +48,8 @@ public class GLText extends GLEntity {
 
     public void setScale(float factor){
         super.setScale(factor);
-        _spacing = GLYPH_SPACING * _xScale;
-//        _glyphWidth = GLYPH_WIDTH*_xScale;
+        _spacing = GLYPH_SPACING * _scale;
+//        _glyphWidth = GLYPH_WIDTH*_scale;
 //        _glyphHeight = GLYPH_HEIGHT*_yScale;
         _height = _glyphHeight;
         _width = (_glyphWidth+_spacing)*_meshes.length;

@@ -39,7 +39,7 @@ public class Projectile extends GLEntity implements Suspendable {
         super.update(dt);
         _lifespan -= dt;
         if (_lifespan <= 0){
-            destroy();
+            suspend();
         }
     }
 
@@ -49,18 +49,21 @@ public class Projectile extends GLEntity implements Suspendable {
         GLManager.draw(_mesh, rotationViewportModelMatrix, _color, SIZE);
     }
 
-    public void destroy(){
+    public void suspend(){
         _suspended = true;
     }
 
     @Override
     public void onCollision(GLEntity that) {
         super.onCollision(that);
-        destroy();
+        suspend();
     }
 
     @Override
     public boolean isSuspended() {
         return _suspended;
     }
+
+    @Override
+    public void onRemove() {}
 }

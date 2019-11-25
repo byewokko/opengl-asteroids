@@ -47,6 +47,7 @@ public abstract class EntityPool<E extends GLEntity & Suspendable> extends Entit
         for (Iterator<E> iterator = _activeEntities.iterator(); iterator.hasNext();){
             E e = iterator.next();
             if (e.isSuspended()){
+                e.onRemove();
                 _suspendedEntities.add(e);
                 iterator.remove();
             }

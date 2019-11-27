@@ -2,6 +2,8 @@ package com.grimezupt.asteroidsopengl.utils;
 
 import android.graphics.PointF;
 
+import com.grimezupt.asteroidsopengl.Point3D;
+
 public abstract class CollisionDetection {
     private static final String TAG = "CollisionDetection";
     public static final float TO_DEGREES = (float)(180.0 / Math.PI);
@@ -18,6 +20,14 @@ public abstract class CollisionDetection {
     }
 
     public static boolean polygonVsPolygon(PointF[] polyA, PointF[] polyB){
+        return false; //TODO
+    }
+
+    public static boolean polygonVsSegment(PointF[] polyA, PointF segB1, PointF segB2){
+        return false;
+    }
+
+    public static boolean segmentVsSegment(PointF segA1, PointF segA2, PointF segB1, PointF segB2){
         return false;
     }
 
@@ -43,6 +53,6 @@ public abstract class CollisionDetection {
         final float area2 = Math.abs((t2.x-p.x)*(t3.y-p.y) - (t3.x-p.x)*(t2.y-p.y));
         final float area3 = Math.abs((t3.x-p.x)*(t1.y-p.y) - (t1.x-p.x)*(t3.y-p.y));
 
-        return !((area1 + area2 + area3) > triangleArea);
+        return ((area1 + area2 + area3) <= triangleArea);
     }
 }

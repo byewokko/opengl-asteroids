@@ -29,8 +29,7 @@ public class Asteroid extends GLEntity implements Suspendable {
         final float[] vertices = Mesh.regularPolygonGeometry(points);
         _mesh = new Mesh(vertices, GLES20.GL_LINES);
         _mesh.applyAspectRatio();
-        _mesh.setVertexAverageOrigin();
-        _collisionRadius = (float) (1 + Math.cos(Math.PI/points)) * 0.5f;
+//        _mesh.setVertexAverageOrigin();
     }
 
     @Override

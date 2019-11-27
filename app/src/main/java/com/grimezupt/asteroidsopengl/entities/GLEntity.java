@@ -30,7 +30,6 @@ public class GLEntity extends Entity {
     public float _velY = 0f;
     public float _velW = 0f; //angular velocity
 
-    public float _collisionRadius = 0f;
 
     public GLEntity() {
         setColors(Config.Colors.FOREGROUND);

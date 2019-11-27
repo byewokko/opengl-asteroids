@@ -10,7 +10,7 @@ import com.grimezupt.asteroidsopengl.utils.Utils;
 
 public class Player extends GLEntity {
     private static final String TAG = "Player";
-    private static final float SIZE = 10f;
+    private static final float SIZE = 5f;
     private static final float THRUST = 2.5f;
     private static final float DRAG = 0.995f;
     private static final float ROTATION_VELOCITY = 320f;
@@ -31,7 +31,7 @@ public class Player extends GLEntity {
         _rotation = 0f;
         setScale(SIZE);
         _mesh = new Triangle();
-//        _mesh.applyAspectRatio();
+        _mesh.applyAspectRatio();
     }
 
     @Override
@@ -83,16 +83,13 @@ public class Player extends GLEntity {
         if (distance > radius() + that.radius()){
             return false;
         }
-//        if (distance < that.radius()){
-//            return true;
-//        }
+        if (distance < that.radius()){ //TODO: stupid
+            return true;
+        }
         final PointF[] thisVerts = CollisionDetection.pointListA;
         getPointList(thisVerts);
         final PointF[] thatVerts = CollisionDetection.pointListB;
         that.getPointList(thatVerts);
-        if (_shooting){
-            Log.d(TAG, "blah");
-        }
 
         return CollisionDetection.triangleVsPolygon(thisVerts, thatVerts);
     }

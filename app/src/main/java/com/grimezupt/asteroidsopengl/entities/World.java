@@ -11,7 +11,7 @@ import java.util.Objects;
 public class World extends Entity {
     private static final String TAG = "World";
     private static final int PROJECTILE_POOL_SIZE = 3;
-    private static final int ASTEROID_COUNT = 8;
+    private static final int ASTEROID_COUNT = 4;
     public static Game _game = null;
     public static float WIDTH = 160f;
     public static float HEIGHT = 90f;
@@ -56,11 +56,11 @@ public class World extends Entity {
 //                    points));
 //        }
         _asteroidPool.init(ASTEROID_COUNT*3);
-        for (int points = 3; points <= 9; points++){
+        for (int i = 0; i < ASTEROID_COUNT; i++){
             Asteroid a = _asteroidPool.pull();
             Objects.requireNonNull(a).activate(Random.between(0, WIDTH),
                     Random.between(0, HEIGHT),
-                    points);
+                    Random.between(5, 10));
         }
         addEntity(_asteroidPool);
         _projectilePool.init(PROJECTILE_POOL_SIZE);

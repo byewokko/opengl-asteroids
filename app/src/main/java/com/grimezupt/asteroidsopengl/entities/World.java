@@ -93,7 +93,7 @@ public class World extends Entity {
             if (_player.isColliding(a)){
                 _player.onCollision(a);
                 a.onCollision(_player);
-                break;
+//                break;
             }
         }
     }

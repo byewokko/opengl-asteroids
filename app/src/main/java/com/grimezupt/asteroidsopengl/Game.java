@@ -6,7 +6,6 @@ import android.util.AttributeSet;
 
 import com.grimezupt.asteroidsopengl.entities.Entity;
 import com.grimezupt.asteroidsopengl.entities.GLBorder;
-import com.grimezupt.asteroidsopengl.entities.GLEntity;
 import com.grimezupt.asteroidsopengl.entities.Player;
 import com.grimezupt.asteroidsopengl.entities.World;
 

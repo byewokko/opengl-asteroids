@@ -11,12 +11,10 @@ public class Asteroid extends GLEntity implements Suspendable {
     private static final float DEFAULT_SCALE = 10;
     private boolean _suspended = false;
     private EntityPool<Asteroid> _pool = null;
-    private final GLBorder _box;
 
     public Asteroid(){
         _suspended = true;
         setScale(DEFAULT_SCALE);
-        _box = new GLBorder(_x, _y, 1f, 1f);
     }
 
     public void setRandomVelocity() {
@@ -39,13 +37,11 @@ public class Asteroid extends GLEntity implements Suspendable {
     public void update(double dt) {
         super.update(dt);
         _color = Config.Colors.FOREGROUND;
-        _box.setCenter(_x, _y);
     }
 
     @Override
     public void render(float[] viewportMatrix) {
         super.render(viewportMatrix);
-        _box.render(viewportMatrix);
     }
 
     public void suspend(){
@@ -57,10 +53,7 @@ public class Asteroid extends GLEntity implements Suspendable {
         _y = y;
         setMesh(points);
         setRandomVelocity();
-        _width = _mesh._width * _scale;
-        _height = _mesh._height * _scale;
         _suspended = false;
-        _box.setAttrs(_x, _y, _width, _height);
     }
 
     public void setPool(EntityPool<Asteroid> pool){

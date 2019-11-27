@@ -6,6 +6,7 @@ import android.opengl.Matrix;
 import com.grimezupt.asteroidsopengl.Config;
 import com.grimezupt.asteroidsopengl.GLManager;
 import com.grimezupt.asteroidsopengl.mesh.Mesh;
+import com.grimezupt.asteroidsopengl.utils.CollisionDetection;
 import com.grimezupt.asteroidsopengl.utils.Utils;
 
 import java.util.Objects;
@@ -20,8 +21,8 @@ public class GLEntity extends Entity {
     float[] _color = new float[4];
     public float _x = 0f;
     public float _y = 0f;
-    public float _width = 0f;
-    public float _height = 0f;
+//    public float _width = 0f;
+//    public float _height = 0f;
     public float _depth = 0f;
     public float _scale = 1f;
     public float _rotation = 0f;
@@ -97,13 +98,13 @@ public class GLEntity extends Entity {
         overlap.x = 0.0f;
         overlap.y = 0.0f;
         final float centerDeltaX = a.centerX() - b.centerX();
-        final float halfWidths = (a._width + b._width) * 0.5f;
+        final float halfWidths = (a.width() + b.width()) * 0.5f;
         float dx = Math.abs(centerDeltaX); //cache the abs, we need it twice
 
         if (dx > halfWidths) return false ; //no overlap on x == no collision
 
         final float centerDeltaY = a.centerY() - b.centerY();
-        final float halfHeights = (a._height + b._height) * 0.5f;
+        final float halfHeights = (a.height() + b.height()) * 0.5f;
         float dy = Math.abs(centerDeltaY);
 
         if (dy > halfHeights) return false ; //no overlap on y == no collision
@@ -188,7 +189,23 @@ public class GLEntity extends Entity {
         _y = y;
     }
 
+    public float width(){
+        return _mesh._width*_scale;
+    }
+
+    public float height(){
+        return _mesh._height*_scale;
+    }
+
+    public float radius(){
+        return (float) (_mesh._radius*_scale);
+    }
+
     public void setScale(final float scale){
         _scale = scale;
+    }
+
+    public void getPointList(final PointF[] pointList) {
+        _mesh.getPointList(pointList, _x, _y, _scale, _rotation*RADIANS);
     }
 }

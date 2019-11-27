@@ -18,8 +18,6 @@ public class GLBorder extends GLEntity {
     public void setAttrs(float x, float y, float width, float height) {
         _x = x;
         _y = y;
-        _width = width;
-        _height = height;
         _mesh.setWidthHeight(width, height);
     }
 

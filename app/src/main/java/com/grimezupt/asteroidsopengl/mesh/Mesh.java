@@ -1,5 +1,6 @@
 package com.grimezupt.asteroidsopengl.mesh;
 
+import android.graphics.PointF;
 import android.opengl.GLES20;
 
 import com.grimezupt.asteroidsopengl.Point3D;
@@ -21,6 +22,7 @@ public class Mesh {
 
     public FloatBuffer _vertexBuffer = null;
     public int _vertexCount = 0;
+    private PointF[] _pointList;
     public int _drawMode = GLES20.GL_TRIANGLES;
 
     public Point3D _min = new Point3D();
@@ -54,6 +56,7 @@ public class Mesh {
         _vertexBuffer.put(geometry);
         _vertexBuffer.position(0);
         _vertexCount = geometry.length / COORDS_PER_VERTEX;
+        _pointList = new PointF[_vertexCount];
         updateBounds();
         saveAspectRatio();
     }
@@ -219,8 +222,6 @@ public class Mesh {
     }
 
     public void setOrigin(final float x, final float y, final float z){
-        Utils.require(x >= -1f && x <= 1f && y >= -1f && y <= 1f && z >= -1f && z <= 1f,
-                "Origin must be between -1 and 1.");
         for (int i = 0; i < _vertexCount * COORDS_PER_VERTEX; i += COORDS_PER_VERTEX) {
             final double nx = _vertexBuffer.get(i + X) - x;
             final double ny = _vertexBuffer.get(i + Y) - y;
@@ -243,5 +244,28 @@ public class Mesh {
         y /= _vertexCount;
         z /= _vertexCount;
         setOrigin(x, y, z);
+    }
+
+    public void getPointList(final PointF[] pointList, final float offsetX, final float offsetY, final float scale, final float theta){
+        final double sinTheta = Math.sin(theta);
+        final double cosTheta = Math.cos(theta);
+        float[] verts = new float[_vertexCount*COORDS_PER_VERTEX];
+        _vertexBuffer.position(0);
+        _vertexBuffer.get(verts); //bulk transfer all verts
+        _vertexBuffer.position(0);
+        int index = 0;
+        final int step;
+        if (_drawMode == GLES20.GL_LINES){
+            step = 2;
+        } else {
+            step = 1;
+        }
+        for (int i = 0; i < _vertexCount * COORDS_PER_VERTEX; i += COORDS_PER_VERTEX*step) {
+            final float x = (float) ((verts[i + X] * cosTheta - verts[i + Y] * sinTheta) * scale + offsetX);
+            final float y = (float) ((verts[i + Y] * cosTheta + verts[i + X] * sinTheta) * scale + offsetY);
+            //final float z = verts[i + Z];
+            pointList[index++].x = x;
+            pointList[index++].y = y;  //TODO: DANGER! We're creating new objects, make a pool instead!
+        }
     }
 }

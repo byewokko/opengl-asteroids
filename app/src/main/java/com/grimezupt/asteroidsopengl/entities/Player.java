@@ -1,19 +1,22 @@
 package com.grimezupt.asteroidsopengl.entities;
 
+import android.graphics.PointF;
+import android.util.Log;
+
 import com.grimezupt.asteroidsopengl.InputManager;
 import com.grimezupt.asteroidsopengl.mesh.Triangle;
+import com.grimezupt.asteroidsopengl.utils.CollisionDetection;
 import com.grimezupt.asteroidsopengl.utils.Utils;
 
 public class Player extends GLEntity {
     private static final String TAG = "Player";
-    private static final float SIZE = 5f;
+    private static final float SIZE = 10f;
     private static final float THRUST = 2.5f;
     private static final float DRAG = 0.995f;
     private static final float ROTATION_VELOCITY = 320f;
     private static final float MAX_VELOCITY = 200f;
     private static final float SHOOTING_COOLDOWN = 0.25f;
     private static final float RECOIL = 12f;
-    private final GLBorder _box;
     private EntityPool<Projectile> _projectilePool = null;
     private float _horizontalFactor = 0f;
     private boolean _thrusting = false;
@@ -28,10 +31,7 @@ public class Player extends GLEntity {
         _rotation = 0f;
         setScale(SIZE);
         _mesh = new Triangle();
-        _mesh.applyAspectRatio();
-        _width = _mesh._width * _scale;
-        _height = _mesh._height * _scale;
-        _box = new GLBorder(_x, _y, _width, _height);
+//        _mesh.applyAspectRatio();
     }
 
     @Override
@@ -45,7 +45,6 @@ public class Player extends GLEntity {
         _velX *= DRAG;
         _velY *= DRAG;
         super.update(dt);
-        _box.setCenter(_x, _y);
     }
 
     private void thrust(final float velocity, final float theta) {
@@ -70,7 +69,6 @@ public class Player extends GLEntity {
     @Override
     public void render(float[] viewportMatrix) {
         super.render(viewportMatrix);
-        _box.render(viewportMatrix);
     }
 
     public void input(InputManager inputs) {
@@ -81,6 +79,21 @@ public class Player extends GLEntity {
 
     @Override
     public boolean isColliding(GLEntity that) {
-        return super.isColliding(that);
+        final float distance = (float) Utils.getVectorMagnitude(_x - that._x, _y - that._y);
+        if (distance > radius() + that.radius()){
+            return false;
+        }
+//        if (distance < that.radius()){
+//            return true;
+//        }
+        final PointF[] thisVerts = CollisionDetection.pointListA;
+        getPointList(thisVerts);
+        final PointF[] thatVerts = CollisionDetection.pointListB;
+        that.getPointList(thatVerts);
+        if (_shooting){
+            Log.d(TAG, "blah");
+        }
+
+        return CollisionDetection.triangleVsPolygon(thisVerts, thatVerts);
     }
 }

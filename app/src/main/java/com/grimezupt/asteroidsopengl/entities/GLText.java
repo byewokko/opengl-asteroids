@@ -51,9 +51,17 @@ public class GLText extends GLEntity {
         _spacing = GLYPH_SPACING * _scale;
 //        _glyphWidth = GLYPH_WIDTH*_scale;
 //        _glyphHeight = GLYPH_HEIGHT*_yScale;
-        _height = _glyphHeight;
-        _width = (_glyphWidth+_spacing)*_meshes.length;
-        _pointSize = POINT_SIZE;
+//        _pointSize = POINT_SIZE;
+    }
+
+    @Override
+    public float height() {
+        return _glyphHeight;
+    }
+
+    @Override
+    public float width() {
+        return (_glyphWidth+_spacing)*_meshes.length;
     }
 
     public void setString(final String s){

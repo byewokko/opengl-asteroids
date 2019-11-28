@@ -3,6 +3,7 @@ package com.grimezupt.asteroidsopengl;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.os.Debug;
 
 import com.grimezupt.asteroidsopengl.entities.GLText;
 import com.grimezupt.asteroidsopengl.entities.World;
@@ -64,13 +65,17 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     double accumulator = 0.0;
     double currentTime = System.nanoTime()*NANOSECOND;
     public void update() {
-        final double newTime = System.nanoTime()*NANOSECOND;
+        final double newTime = System.nanoTime() * NANOSECOND;
         final double frameTime = newTime - currentTime;
-        currentTime = newTime;
-        accumulator += frameTime;
-        while(accumulator >= dt){
-            _world.update(dt);
-            accumulator -= dt;
+        if (Debug.isDebuggerConnected()) {
+            _world.update(0.03);
+        } else {
+            currentTime = newTime;
+            accumulator += frameTime;
+            while (accumulator >= dt) {
+                _world.update(dt);
+                accumulator -= dt;
+            }
         }
         _fpsQueue.put((float) frameTime);
         _fpsText.setString(String.format(Locale.ENGLISH,"%.0ffps", 1d/_fpsQueue.readAverage()));

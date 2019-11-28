@@ -7,7 +7,7 @@ import com.grimezupt.asteroidsopengl.mesh.Mesh;
 import com.grimezupt.asteroidsopengl.utils.Random;
 import com.grimezupt.asteroidsopengl.utils.Utils;
 
-public class Asteroid extends GLEntity implements Suspendable {
+public class Asteroid extends GLEntity implements Poolable {
     private static final float DEFAULT_SCALE = 10;
     private boolean _suspended = false;
     private EntityPool<Asteroid> _pool = null;
@@ -65,7 +65,7 @@ public class Asteroid extends GLEntity implements Suspendable {
     }
 
     @Override
-    public void onRemove() {
+    public void onSuspend() {
         // TODO: make nicer
         if (_scale > 0.3 * DEFAULT_SCALE) {
             final float velocity = (float) Utils.getVectorMagnitude(_velX, _velY);

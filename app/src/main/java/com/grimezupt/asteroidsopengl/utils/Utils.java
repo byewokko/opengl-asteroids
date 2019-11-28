@@ -6,6 +6,8 @@ import android.util.Log;
 
 public abstract class Utils {
 
+    private static PointF poolPoint = new PointF();
+
     public static float clamp(final float value, final float min, final float max){
         if (value < min){
             return min;
@@ -48,5 +50,28 @@ public abstract class Utils {
 
     public static boolean isBetween(float low, float high, float var) {
         return (var >= low && var <= high);
+    }
+
+    public static PointF normalize(float x, float y) {
+        poolPoint.x = x;
+        poolPoint.y = y;
+        normalize(poolPoint);
+        return poolPoint;
+    }
+
+    public static void normalize(final PointF pointF) {
+        final float max = (Math.abs(pointF.x) > Math.abs(pointF.y))? pointF.x : pointF.y;
+        if (max == 0){
+            pointF.x = 0f;
+            pointF.y = 0f;
+        } else {
+            pointF.x = pointF.x / max;
+            pointF.y = pointF.y / max;
+        }
+    }
+
+    public static float weightedAvg2(float a, float wa, float b, float wb) {
+        final float denom = (wa+wb == 0)? 0.5f : 1/(wa+wb);
+        return (wa*a + wb*b) * denom;
     }
 }

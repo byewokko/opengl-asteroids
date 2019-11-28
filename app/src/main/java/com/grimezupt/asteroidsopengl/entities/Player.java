@@ -1,7 +1,6 @@
 package com.grimezupt.asteroidsopengl.entities;
 
 import android.graphics.PointF;
-import android.util.Log;
 
 import com.grimezupt.asteroidsopengl.InputManager;
 import com.grimezupt.asteroidsopengl.mesh.Triangle;
@@ -16,12 +15,15 @@ public class Player extends GLEntity {
     private static final float ROTATION_VELOCITY = 320f;
     private static final float MAX_VELOCITY = 200f;
     private static final float SHOOTING_COOLDOWN = 0.25f;
-    private static final float RECOIL = 12f;
+    private static final float RECOIL = 10f;
+    private static final float KNOCKBACK = 15f;
+    private static final float RECOVERY_TIME = 2f;
     private EntityPool<Projectile> _projectilePool = null;
     private float _horizontalFactor = 0f;
     private boolean _thrusting = false;
     private boolean _shooting = false;
-    private float _shootingTimer = 0f;
+    private float _shootingCooldown = 0f;
+    private double _timeToRecover = 0f;
 
 
     public Player(EntityPool<Projectile> projectilePool, float x, float y) {
@@ -36,7 +38,8 @@ public class Player extends GLEntity {
 
     @Override
     public void update(double dt) {
-        _shootingTimer -= dt;
+        _timeToRecover -= dt;
+        _shootingCooldown -= dt;
         final float velocity = (float) Utils.getVectorMagnitude(_velX, _velY);
         final float theta = _rotation * RADIANS;
         thrust(velocity, theta);
@@ -55,11 +58,11 @@ public class Player extends GLEntity {
     }
 
     private void shoot(final float theta){
-        if (_shooting && _shootingTimer <= 0f) {
+        if (_shooting && _shootingCooldown <= 0f && _timeToRecover <= 0f) {
             Projectile p = _projectilePool.pull();
             if (p != null) {
                 p.activate(_x, _y, _velX, _velY, theta);
-                _shootingTimer = SHOOTING_COOLDOWN;
+                _shootingCooldown = SHOOTING_COOLDOWN;
                 _velX -= RECOIL * Math.sin(theta);
                 _velY += RECOIL * Math.cos(theta);
             }
@@ -83,7 +86,7 @@ public class Player extends GLEntity {
         if (distance > radius() + that.radius()){
             return false;
         }
-        if (distance < that.radius()){ //TODO: stupid
+        if (distance < that.radius() - width()){ //TODO: stupid
             return true;
         }
         final PointF[] thisVerts = CollisionDetection.pointListA;
@@ -92,5 +95,29 @@ public class Player extends GLEntity {
         that.getPointList(thatVerts);
 
         return CollisionDetection.triangleVsPolygon(thisVerts, thatVerts);
+    }
+
+    @Override
+    public void onCollision(GLEntity that) {
+        super.onCollision(that);
+    }
+
+    public void onCollision(Asteroid that) {
+        super.onCollision(that);
+        final PointF relativePos = Utils.normalize(_x - that._x, _y - that._y);
+        _velX += relativePos.x * KNOCKBACK;
+        _velY += relativePos.y * KNOCKBACK;
+        if (_timeToRecover <= 0f) {
+            takeDamage();
+            recover();
+        }
+    }
+
+    private void takeDamage() {
+
+    }
+
+    private void recover() {
+        _timeToRecover = RECOVERY_TIME;
     }
 }

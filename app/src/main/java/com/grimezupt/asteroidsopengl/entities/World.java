@@ -3,6 +3,7 @@ package com.grimezupt.asteroidsopengl.entities;
 import com.grimezupt.asteroidsopengl.Game;
 import com.grimezupt.asteroidsopengl.InputManager;
 import com.grimezupt.asteroidsopengl.utils.Random;
+import com.grimezupt.asteroidsopengl.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,8 +19,9 @@ public class World extends Entity {
     private static final int STAR_COUNT = 50;
 
     public final ArrayList<Entity> _entities = new ArrayList<>();
-    public final EntityPool<Asteroid> _asteroidPool;
+    public final AsteroidPool _asteroidPool;
     public final EntityPool<Projectile> _projectilePool;
+    public final ExplosionPool _explosionPool;
 
     private Player _player = null;
     private GLBorder _border = null;
@@ -32,14 +34,8 @@ public class World extends Entity {
                 return new Projectile();
             }
         };
-        _asteroidPool = new EntityPool<Asteroid>(EntityPool.DYNAMIC_SIZE) {
-            @Override
-            Asteroid createNew() {
-                Asteroid a = new Asteroid();
-                a.setPool(_asteroidPool);
-                return a;
-            }
-        };
+        _asteroidPool = new AsteroidPool();
+        _explosionPool = new ExplosionPool();
     }
 
     public void build() {
@@ -73,8 +69,8 @@ public class World extends Entity {
             e.update(dt);
         }
         collisionDetection();
-        _asteroidPool.removeSuspended();
-        _projectilePool.removeSuspended();
+//        _asteroidPool.cleanup();
+        _projectilePool.cleanup();
     }
 
     private void collisionDetection() {
@@ -84,6 +80,12 @@ public class World extends Entity {
                 if (p.isColliding(a)){
                     p.onCollision(a);
                     a.onCollision(p);
+                    if (a.isSuspended()){
+                        // asteroid destroyed!
+                        _explosionPool.makeExplosion(p, a, ExplosionPool.BIG_EXPLOSION);
+                    } else {
+                        _explosionPool.makeExplosion(p, a, ExplosionPool.SMALL_EXPLOSION);
+                    }
                     break; // bullet can damage only one asteroid
                 }
             }
@@ -91,9 +93,14 @@ public class World extends Entity {
         // player vs. asteroids
         for (Asteroid a : _asteroidPool._activeEntities){
             if (_player.isColliding(a)){
-                _player.onCollision(a);
-                a.onCollision(_player);
-//                break;
+//                _player.onCollision(a);
+//                a.onCollision(_player);
+                if (a.isSuspended()){
+                    // asteroid destroyed!
+                    _explosionPool.makeExplosion(_player, a, ExplosionPool.BIG_EXPLOSION);
+                } else {
+                    _explosionPool.makeExplosion(_player, a, ExplosionPool.SMALL_EXPLOSION);
+                }
             }
         }
     }

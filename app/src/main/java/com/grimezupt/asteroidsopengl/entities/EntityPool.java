@@ -1,19 +1,19 @@
 package com.grimezupt.asteroidsopengl.entities;
 
-import android.util.Log;
-
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public abstract class EntityPool<E extends GLEntity & Suspendable> extends Entity {
+public abstract class EntityPool<E extends GLEntity & Poolable> extends Entity {
     private static final String TAG = "EntityPool";
     public static final int FIXED_SIZE = 0;
     public static final int DYNAMIC_SIZE = 1;
     private final int _sizeType;
     private ArrayList<E> _suspendedEntities = new ArrayList<>();
     public ArrayList<E> _activeEntities = new ArrayList<>();
+    private ArrayList<E> _entitiesToSuspend = new ArrayList<>();
+    private ArrayList<E> _entitiesToAdd = new ArrayList<>();
 
     public EntityPool(int sizeType) {
         _sizeType = sizeType;
@@ -39,7 +39,7 @@ public abstract class EntityPool<E extends GLEntity & Suspendable> extends Entit
         } else {
             entity = _suspendedEntities.remove(0);
         }
-        _activeEntities.add(entity);
+        _entitiesToAdd.add(entity);
         return entity;
     }
 
@@ -47,7 +47,7 @@ public abstract class EntityPool<E extends GLEntity & Suspendable> extends Entit
         for (Iterator<E> iterator = _activeEntities.iterator(); iterator.hasNext();){
             E e = iterator.next();
             if (e.isSuspended()){
-                e.onRemove();
+                e.onSuspend();
                 _suspendedEntities.add(e);
                 iterator.remove();
             }
@@ -68,4 +68,11 @@ public abstract class EntityPool<E extends GLEntity & Suspendable> extends Entit
         }
     }
 
+    public void cleanup(){
+        removeSuspended(); //TODO: get rid of this
+        _activeEntities.removeAll(_entitiesToSuspend);
+        _suspendedEntities.addAll(_entitiesToSuspend);
+        _activeEntities.addAll(_entitiesToAdd);
+        _suspendedEntities.removeAll(_entitiesToAdd);
+    }
 }

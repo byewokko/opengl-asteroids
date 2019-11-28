@@ -11,6 +11,14 @@ import com.grimezupt.asteroidsopengl.entities.World;
 
 public class Game extends GLSurfaceView {
     private static final String TAG = "Game";
+    public enum Event {
+        BULLET_IMPACT,
+        ASTEROID_DESTROYED,
+        PLAYER_HURT,
+        SHOOT,
+        GAME_OVER,
+        LEVEL_CLEAR
+    }
     private GLRenderer _renderer = null;
     private World _world = null;
     private Player _player = null;
@@ -44,5 +52,9 @@ public class Game extends GLSurfaceView {
 
     public InputManager getInputs() {
         return _controls;
+    }
+
+    public void onGameEvent(Event event, Entity entity){
+        // TODO: play sound
     }
 }

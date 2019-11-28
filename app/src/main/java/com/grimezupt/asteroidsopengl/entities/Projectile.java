@@ -5,7 +5,7 @@ import android.opengl.GLES20;
 import com.grimezupt.asteroidsopengl.GLManager;
 import com.grimezupt.asteroidsopengl.mesh.Mesh;
 
-public class Projectile extends GLEntity implements Suspendable {
+public class Projectile extends GLEntity implements Poolable {
     private static final float SIZE = 10f;
     private static final float FIRE_VELOCITY = 100f;
     private static final float LIFESPAN = 3f;
@@ -65,5 +65,5 @@ public class Projectile extends GLEntity implements Suspendable {
     }
 
     @Override
-    public void onRemove() {}
+    public void onSuspend() {}
 }

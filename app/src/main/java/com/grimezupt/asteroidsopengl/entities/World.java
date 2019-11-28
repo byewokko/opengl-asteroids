@@ -69,7 +69,7 @@ public class World extends Entity {
             e.update(dt);
         }
         collisionDetection();
-//        _asteroidPool.cleanup();
+        _asteroidPool.cleanup();
         _projectilePool.cleanup();
     }
 
@@ -93,8 +93,8 @@ public class World extends Entity {
         // player vs. asteroids
         for (Asteroid a : _asteroidPool._activeEntities){
             if (_player.isColliding(a)){
-//                _player.onCollision(a);
-//                a.onCollision(_player);
+                _player.onCollision(a);
+                a.onCollision(_player);
                 if (a.isSuspended()){
                     // asteroid destroyed!
                     _explosionPool.makeExplosion(_player, a, ExplosionPool.BIG_EXPLOSION);

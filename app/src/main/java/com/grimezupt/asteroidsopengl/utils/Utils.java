@@ -60,7 +60,9 @@ public abstract class Utils {
     }
 
     public static void normalize(final PointF pointF) {
-        final float max = (Math.abs(pointF.x) > Math.abs(pointF.y))? pointF.x : pointF.y;
+        final float absX = Math.abs(pointF.x);
+        final float absY = Math.abs(pointF.y);
+        final float max = (absX > absY)? absX : absY;
         if (max == 0){
             pointF.x = 0f;
             pointF.y = 0f;

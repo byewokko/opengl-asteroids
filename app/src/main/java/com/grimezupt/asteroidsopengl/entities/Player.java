@@ -16,8 +16,9 @@ public class Player extends GLEntity {
     private static final float MAX_VELOCITY = 200f;
     private static final float SHOOTING_COOLDOWN = 0.25f;
     private static final float RECOIL = 10f;
-    private static final float KNOCKBACK = 15f;
-    private static final float RECOVERY_TIME = 2f;
+    private static final float KNOCKBACK = 20f;
+    private static final float RECOVERY_TIME = 1.6f;
+    private static final float NUMB_TIME = 0.6f;
     private EntityPool<Projectile> _projectilePool = null;
     private float _horizontalFactor = 0f;
     private boolean _thrusting = false;
@@ -76,8 +77,13 @@ public class Player extends GLEntity {
 
     public void input(InputManager inputs) {
         _horizontalFactor = inputs._horizontalFactor;
-        _thrusting = inputs._pressingA;
-        _shooting = inputs._pressingB;
+        if (isNumb()) {
+            _thrusting = false;
+            _shooting = false;
+        } else {
+            _thrusting = inputs._pressingA;
+            _shooting = inputs._pressingB;
+        }
     }
 
     @Override
@@ -86,9 +92,9 @@ public class Player extends GLEntity {
         if (distance > radius() + that.radius()){
             return false;
         }
-        if (distance < that.radius() - width()){ //TODO: stupid
-            return true;
-        }
+//        if (distance < that.radius() - width()){ //TODO: stupid
+//            return true;
+//        }
         final PointF[] thisVerts = CollisionDetection.pointListA;
         getPointList(thisVerts);
         final PointF[] thatVerts = CollisionDetection.pointListB;
@@ -103,10 +109,10 @@ public class Player extends GLEntity {
     }
 
     public void onCollision(Asteroid that) {
-        super.onCollision(that);
-        final PointF relativePos = Utils.normalize(_x - that._x, _y - that._y);
-        _velX += relativePos.x * KNOCKBACK;
-        _velY += relativePos.y * KNOCKBACK;
+//        super.onCollision(that);
+        final PointF relativePos = Utils.normalize(this._x - that._x, this._y - that._y);
+        _velX = relativePos.x * KNOCKBACK;
+        _velY = relativePos.y * KNOCKBACK;
         if (_timeToRecover <= 0f) {
             takeDamage();
             recover();
@@ -119,5 +125,9 @@ public class Player extends GLEntity {
 
     private void recover() {
         _timeToRecover = RECOVERY_TIME;
+    }
+
+    private boolean isNumb() {
+        return (_timeToRecover > RECOVERY_TIME - NUMB_TIME);
     }
 }

@@ -74,5 +74,7 @@ public abstract class EntityPool<E extends GLEntity & Poolable> extends Entity {
         _suspendedEntities.addAll(_entitiesToSuspend);
         _activeEntities.addAll(_entitiesToAdd);
         _suspendedEntities.removeAll(_entitiesToAdd);
+        _entitiesToAdd.clear();
+        _entitiesToSuspend.clear();
     }
 }

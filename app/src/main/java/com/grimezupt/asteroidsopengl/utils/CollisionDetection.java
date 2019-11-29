@@ -20,15 +20,36 @@ public abstract class CollisionDetection {
     }
 
     public static boolean polygonVsPolygon(PointF[] polyA, PointF[] polyB){
+        int j = polyB.length - 1;
+        for (int i = 0; i < polyB.length; i++) {
+            if (polygonVsSegment(polyA, polyB[j], polyB[i])){
+                return true;
+            }
+            j = i;
+        }
         return false; //TODO
     }
 
     public static boolean polygonVsSegment(PointF[] polyA, PointF segB1, PointF segB2){
+        int j = polyA.length - 1;
+        for (int i = 0; i < polyA.length; i++) {
+            if (segmentVsSegment(polyA[j], polyA[i], segB1, segB2)){
+                return true;
+            }
+            j = i;
+        }
         return false;
     }
 
-    public static boolean segmentVsSegment(PointF segA1, PointF segA2, PointF segB1, PointF segB2){
-        return false;
+    public static boolean segmentVsSegment(PointF a1, PointF a2, PointF b1, PointF b2){
+        final float dxa = a2.x - a1.x;
+        final float dya = a2.y - a1.y;
+        final float dxb = b2.x - b1.x;
+        final float dyb = b2.y - b1.y;
+        final float cInv = 1f / (dyb*dxa - dxb*dya);
+        float uA = (dxb*(a1.y-b1.y) - dyb*(a1.x-b1.x)) * cInv;
+        float uB = (dxa*(a1.y-b1.y) - dya*(a1.x-b1.x)) * cInv;
+        return (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1);
     }
 
     public static boolean triangleVsPolygon(PointF[] triangle, PointF[] polygon) {

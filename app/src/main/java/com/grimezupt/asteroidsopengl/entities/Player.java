@@ -39,6 +39,7 @@ public class Player extends GLEntity {
 
     @Override
     public void update(double dt) {
+        afterCollisionUpdate();
         _timeToRecover -= dt;
         _shootingCooldown -= dt;
         final float velocity = (float) Utils.getVectorMagnitude(_velX, _velY);
@@ -49,6 +50,10 @@ public class Player extends GLEntity {
         _velX *= DRAG;
         _velY *= DRAG;
         super.update(dt);
+    }
+
+    private void afterCollisionUpdate() {
+        // TODO: update speeds accumulated from last update's collisions
     }
 
     private void thrust(final float velocity, final float theta) {
@@ -100,7 +105,8 @@ public class Player extends GLEntity {
         final PointF[] thatVerts = CollisionDetection.pointListB;
         that.getPointList(thatVerts);
 
-        return CollisionDetection.triangleVsPolygon(thisVerts, thatVerts);
+        return CollisionDetection.polygonVsPolygon(thisVerts, thatVerts);
+//        return CollisionDetection.triangleVsPolygon(thisVerts, thatVerts);
     }
 
     @Override

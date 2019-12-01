@@ -22,6 +22,9 @@ public class GLBorder extends GLEntity {
     }
 
     @Override
+    public void update(double dt) {}
+
+    @Override
     public void render(float[] viewportMatrix) {
         super.render(viewportMatrix);
     }

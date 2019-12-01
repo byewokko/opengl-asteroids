@@ -24,6 +24,9 @@ public class Star extends GLEntity {
     }
 
     @Override
+    public void update(double dt) {}
+
+    @Override
     public void render(float[] viewportMatrix) {
         configureMatrix(viewportMatrix);
         GLManager.draw(_mesh, rotationViewportModelMatrix, _color, _size);
@@ -31,5 +34,10 @@ public class Star extends GLEntity {
 
     public static Star random(float xRange, float yRange) {
         return new Star(Random.between(0, xRange), Random.between(0, yRange), Random.between(0, STAR_SIZE));
+    }
+
+    @Override
+    public boolean isDangerous(GLEntity that) {
+        return true;
     }
 }

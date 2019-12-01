@@ -12,7 +12,6 @@ public abstract class EntityPool<E extends GLEntity & Poolable> extends Entity {
     private final int _sizeType;
     private ArrayList<E> _suspendedEntities = new ArrayList<>();
     public ArrayList<E> _activeEntities = new ArrayList<>();
-    private ArrayList<E> _entitiesToSuspend = new ArrayList<>();
     private ArrayList<E> _entitiesToAdd = new ArrayList<>();
 
     public EntityPool(int sizeType) {
@@ -21,7 +20,9 @@ public abstract class EntityPool<E extends GLEntity & Poolable> extends Entity {
 
     public void init(int size) {
         for (int i = 0; i < size; i++) {
-            _suspendedEntities.add(createNew());
+            E e = createNew();
+            e.setPool(this);
+            _suspendedEntities.add(e);
         }
     }
 
@@ -33,6 +34,7 @@ public abstract class EntityPool<E extends GLEntity & Poolable> extends Entity {
         if (_suspendedEntities.isEmpty()) {
             if (_sizeType == 1) {
                 entity = createNew();
+                entity.setPool(this);
             } else {
                 return null;
             }
@@ -43,11 +45,10 @@ public abstract class EntityPool<E extends GLEntity & Poolable> extends Entity {
         return entity;
     }
 
-    public void removeSuspended(){
+    public void suspendInactive(){
         for (Iterator<E> iterator = _activeEntities.iterator(); iterator.hasNext();){
             E e = iterator.next();
-            if (e.isSuspended()){
-                e.onSuspend();
+            if (!e.isActive()){
                 _suspendedEntities.add(e);
                 iterator.remove();
             }
@@ -69,12 +70,9 @@ public abstract class EntityPool<E extends GLEntity & Poolable> extends Entity {
     }
 
     public void cleanup(){
-        removeSuspended(); //TODO: get rid of this
-        _activeEntities.removeAll(_entitiesToSuspend);
-        _suspendedEntities.addAll(_entitiesToSuspend);
+        suspendInactive();
         _activeEntities.addAll(_entitiesToAdd);
         _suspendedEntities.removeAll(_entitiesToAdd);
         _entitiesToAdd.clear();
-        _entitiesToSuspend.clear();
     }
 }

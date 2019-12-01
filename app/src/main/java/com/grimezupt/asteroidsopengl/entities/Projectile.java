@@ -5,16 +5,18 @@ import android.opengl.GLES20;
 import com.grimezupt.asteroidsopengl.GLManager;
 import com.grimezupt.asteroidsopengl.mesh.Mesh;
 
-public class Projectile extends GLEntity implements Poolable {
+public class Projectile extends DynamicEntity implements Poolable {
     private static final float SIZE = 10f;
     private static final float FIRE_VELOCITY = 100f;
     private static final float LIFESPAN = 3f;
     private static Mesh mesh = null; // pool
-    private boolean _suspended = true;
+    private boolean _active = false;
     private double _lifespan = 0d;
+    private EntityPool<Projectile> _pool = null;
 
     public Projectile() {
         initMesh();
+        _mass = 2f;
     }
 
     private void initMesh() {
@@ -30,7 +32,7 @@ public class Projectile extends GLEntity implements Poolable {
         _y = y;
         _velX = (float) (velX + FIRE_VELOCITY * Math.sin(theta));
         _velY = (float) (velY - FIRE_VELOCITY * Math.cos(theta));
-        _suspended = false;
+        _active = true;
         _lifespan = LIFESPAN;
     }
 
@@ -49,8 +51,9 @@ public class Projectile extends GLEntity implements Poolable {
         GLManager.draw(_mesh, rotationViewportModelMatrix, _color, SIZE);
     }
 
+    @Override
     public void suspend(){
-        _suspended = true;
+        _active = false;
     }
 
     @Override
@@ -60,10 +63,17 @@ public class Projectile extends GLEntity implements Poolable {
     }
 
     @Override
-    public boolean isSuspended() {
-        return _suspended;
+    public boolean isActive() {
+        return _active;
     }
 
     @Override
-    public void onSuspend() {}
+    public void setPool(EntityPool pool) {
+        _pool = pool;
+    }
+
+    @Override
+    public boolean isDangerous(GLEntity that) {
+        return true;
+    }
 }

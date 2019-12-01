@@ -1,6 +1,7 @@
 package com.grimezupt.asteroidsopengl.entities;
 
 public interface Poolable {
-    boolean isSuspended(); // TODO: refactor to isActive
-    void onSuspend();
+    boolean isActive();
+    void setPool(EntityPool pool);
+    void suspend();
 }

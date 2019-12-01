@@ -6,12 +6,11 @@ import android.opengl.Matrix;
 import com.grimezupt.asteroidsopengl.Config;
 import com.grimezupt.asteroidsopengl.GLManager;
 import com.grimezupt.asteroidsopengl.mesh.Mesh;
-import com.grimezupt.asteroidsopengl.utils.CollisionDetection;
 import com.grimezupt.asteroidsopengl.utils.Utils;
 
 import java.util.Objects;
 
-public class GLEntity extends Entity {
+public abstract class GLEntity extends Entity {
     public static final float RADIANS = (float) (Math.PI / 180f);
     public static final float[] modelMatrix = new float[4*4];
     public static final float[] viewportModelMatrix = new float[4*4];
@@ -21,14 +20,9 @@ public class GLEntity extends Entity {
     float[] _color = new float[4];
     public float _x = 0f;
     public float _y = 0f;
-//    public float _width = 0f;
-//    public float _height = 0f;
     public float _depth = 0f;
     public float _scale = 1f;
     public float _rotation = 0f;
-    public float _velX = 0f;
-    public float _velY = 0f;
-    public float _velW = 0f; //angular velocity
 
 
     public GLEntity() {
@@ -36,26 +30,7 @@ public class GLEntity extends Entity {
     }
 
     @Override
-    public void update(double dt){
-        _x += _velX * dt;
-        _y += _velY * dt;
-        _rotation += _velW * dt;
-        wrap();
-        //TODO: set _width and _height here
-    }
-
-    void wrap() {
-        if (left() > World.WIDTH){
-            setRight(0);
-        } else if (right() < 0){
-            setLeft(World.WIDTH);
-        }
-        if (top() > World.HEIGHT){
-            setBottom(0);
-        } else if (bottom() < 0){
-            setTop(World.HEIGHT);
-        }
-    }
+    public abstract void update(double dt);
 
     @Override
     public void render(float[] viewportMatrix) {
@@ -207,4 +182,9 @@ public class GLEntity extends Entity {
     public void getPointList(final PointF[] pointList) {
         _mesh.getPointList(pointList, _x, _y, _scale, _rotation*RADIANS);
     }
+
+    public boolean isDangerous(GLEntity that) {
+        return false;
+    }
+
 }

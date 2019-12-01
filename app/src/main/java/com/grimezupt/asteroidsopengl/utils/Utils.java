@@ -59,17 +59,14 @@ public abstract class Utils {
         return poolPoint;
     }
 
-    public static void normalize(final PointF pointF) {
-        final float absX = Math.abs(pointF.x);
-        final float absY = Math.abs(pointF.y);
-        final float max = (absX > absY)? absX : absY;
-        if (max == 0){
-            pointF.x = 0f;
-            pointF.y = 0f;
-        } else {
-            pointF.x = pointF.x / max;
-            pointF.y = pointF.y / max;
+    public static float normalize(final PointF pointF) {
+        float denom = 0;
+        if (pointF.x != 0f || pointF.y != 0f) {
+            denom = (float) Math.sqrt(pointF.x * pointF.x + pointF.y * pointF.y);
+            pointF.x /= denom;
+            pointF.y /= denom;
         }
+        return denom;
     }
 
     public static float weightedAvg2(float a, float wa, float b, float wb) {

@@ -9,7 +9,6 @@ public class AsteroidPool extends EntityPool<Asteroid> {
     @Override
     Asteroid createNew() {
         Asteroid a = new Asteroid();
-        a.setPool(this);
         return a;
     }
 

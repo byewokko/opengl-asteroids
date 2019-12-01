@@ -7,11 +7,10 @@ import com.grimezupt.asteroidsopengl.mesh.Triangle;
 import com.grimezupt.asteroidsopengl.utils.CollisionDetection;
 import com.grimezupt.asteroidsopengl.utils.Utils;
 
-public class Player extends GLEntity {
+public class Player extends DynamicEntity {
     private static final String TAG = "Player";
     private static final float SIZE = 5f;
     private static final float THRUST = 2.5f;
-    private static final float DRAG = 0.995f;
     private static final float ROTATION_VELOCITY = 320f;
     private static final float MAX_VELOCITY = 200f;
     private static final float SHOOTING_COOLDOWN = 0.25f;
@@ -19,12 +18,14 @@ public class Player extends GLEntity {
     private static final float KNOCKBACK = 20f;
     private static final float RECOVERY_TIME = 1.6f;
     private static final float NUMB_TIME = 0.6f;
+    private static final int INIT_LIFE = 5;
     private EntityPool<Projectile> _projectilePool = null;
     private float _horizontalFactor = 0f;
     private boolean _thrusting = false;
     private boolean _shooting = false;
     private float _shootingCooldown = 0f;
     private double _timeToRecover = 0f;
+    public int _life = INIT_LIFE;
 
 
     public Player(EntityPool<Projectile> projectilePool, float x, float y) {
@@ -33,8 +34,10 @@ public class Player extends GLEntity {
         _y = y;
         _rotation = 0f;
         setScale(SIZE);
+        _mass = SIZE;
         _mesh = new Triangle();
         _mesh.applyAspectRatio();
+        recover();
     }
 
     @Override
@@ -47,8 +50,6 @@ public class Player extends GLEntity {
         thrust(velocity, theta);
         shoot(theta);
         _rotation += _horizontalFactor * ROTATION_VELOCITY * dt;
-        _velX *= DRAG;
-        _velY *= DRAG;
         super.update(dt);
     }
 
@@ -135,5 +136,10 @@ public class Player extends GLEntity {
 
     private boolean isNumb() {
         return (_timeToRecover > RECOVERY_TIME - NUMB_TIME);
+    }
+
+    @Override
+    public boolean isDangerous(GLEntity that) {
+        return (_timeToRecover < 0f);
     }
 }

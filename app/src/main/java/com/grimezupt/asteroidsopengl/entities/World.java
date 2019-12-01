@@ -3,7 +3,6 @@ package com.grimezupt.asteroidsopengl.entities;
 import com.grimezupt.asteroidsopengl.Game;
 import com.grimezupt.asteroidsopengl.InputManager;
 import com.grimezupt.asteroidsopengl.utils.Random;
-import com.grimezupt.asteroidsopengl.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,7 +19,7 @@ public class World extends Entity {
 
     public final ArrayList<Entity> _entities = new ArrayList<>();
     public final AsteroidPool _asteroidPool;
-    public final EntityPool<Projectile> _projectilePool;
+    public final ProjectilePool _projectilePool;
     public final ExplosionPool _explosionPool;
 
     private Player _player = null;
@@ -28,12 +27,7 @@ public class World extends Entity {
 
 
     public World() {
-        _projectilePool = new EntityPool<Projectile>(EntityPool.FIXED_SIZE) {
-            @Override
-            Projectile createNew() {
-                return new Projectile();
-            }
-        };
+        _projectilePool = new ProjectilePool();
         _asteroidPool = new AsteroidPool();
         _explosionPool = new ExplosionPool();
     }
@@ -54,9 +48,12 @@ public class World extends Entity {
         _asteroidPool.init(ASTEROID_COUNT*3);
         for (int i = 0; i < ASTEROID_COUNT; i++){
             Asteroid a = _asteroidPool.pull();
-            Objects.requireNonNull(a).activate(Random.between(0, WIDTH),
-                    Random.between(0, HEIGHT),
-                    Random.between(5, 10));
+            if (a != null) {
+                a.setRandomVelocity();
+                a.activate(Random.between(0, WIDTH),
+                        Random.between(0, HEIGHT),
+                        Random.between(5, 10));
+            }
         }
         addEntity(_asteroidPool);
         _projectilePool.init(PROJECTILE_POOL_SIZE);
@@ -80,7 +77,7 @@ public class World extends Entity {
                 if (p.isColliding(a)){
                     p.onCollision(a);
                     a.onCollision(p);
-                    if (a.isSuspended()){
+                    if (a.isActive()){
                         // asteroid destroyed!
                         _explosionPool.makeExplosion(p, a, ExplosionPool.BIG_EXPLOSION);
                     } else {
@@ -95,7 +92,7 @@ public class World extends Entity {
             if (_player.isColliding(a)){
                 _player.onCollision(a);
                 a.onCollision(_player);
-                if (a.isSuspended()){
+                if (a.isActive()){
                     // asteroid destroyed!
                     _explosionPool.makeExplosion(_player, a, ExplosionPool.BIG_EXPLOSION);
                 } else {

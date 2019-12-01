@@ -73,4 +73,8 @@ public abstract class Utils {
         final float denom = (wa+wb == 0)? 0.5f : 1/(wa+wb);
         return (wa*a + wb*b) * denom;
     }
+
+    public static boolean squareWave(final double time, final float period, final float dutyCycle){
+        return (time % period < period*dutyCycle);
+    }
 }

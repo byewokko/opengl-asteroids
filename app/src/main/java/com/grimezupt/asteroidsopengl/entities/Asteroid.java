@@ -10,9 +10,12 @@ import com.grimezupt.asteroidsopengl.utils.Utils;
 
 public class Asteroid extends DynamicEntity implements Poolable {
     private static final float DEFAULT_SCALE = 10;
+    public static final int DEFAULT_SIZE = 2;
     private boolean _active = false;
     private EntityPool<Asteroid> _pool = null;
     private int _points = 5;
+    private int _size = DEFAULT_SIZE;
+    private float _life = 1f;
 
     private static PointF pointPool = new PointF();
 
@@ -38,6 +41,8 @@ public class Asteroid extends DynamicEntity implements Poolable {
 
     @Override
     public void update(double dt) {
+        _velX0 = _velX;
+        _velY0 = _velY;
         super.update(dt);
         _color = Config.Colors.FOREGROUND;
     }
@@ -51,11 +56,18 @@ public class Asteroid extends DynamicEntity implements Poolable {
         _active = false;
     }
 
-    public void activate(final float x, final float y, final int points){
+    public void activate(final float x, final float y, final int points, final int asteroidSize){
         _x = x;
         _y = y;
         setMesh(points);
-        _mass = DEFAULT_SCALE * 1.5f;
+        _size = asteroidSize;
+        setScale(4 + _size * 3);
+        _life = 1 + _size;
+        pointPool.x = _velX;
+        pointPool.y = _velY;
+        Utils.normalize(pointPool);
+        _velX = pointPool.x * (4 - _size) * 8;
+        _velY = pointPool.y * (4 - _size) * 8;
         _active = true;
     }
 
@@ -69,23 +81,17 @@ public class Asteroid extends DynamicEntity implements Poolable {
     }
 
     public void splitIntoTwo(float impactVelX, float impactVelY) {
-        pointPool.x = impactVelX;
-        pointPool.y = impactVelY;
-        // TODO: make nicer
-        final float magnitude = Utils.normalize(pointPool);
         Asteroid a = _pool.pull();
         if (a != null) {
-            a.setScale((float) (0.6 * _scale));
-            a._velX = pointPool.y * magnitude * 1.3f;
-            a._velY = -pointPool.x * magnitude * 1.3f;
-            a.activate(_x, _y, _points);
+            a._velX = impactVelY;
+            a._velY = -impactVelX;
+            a.activate(_x, _y, _points, _size-1);
         }
         a = _pool.pull();
         if (a != null) {
-            a.setScale((float) (0.6 * _scale));
-            a._velX = -pointPool.y * magnitude * 1.3f;
-            a._velY = pointPool.x * magnitude * 1.3f;
-            a.activate(_x, _y, _points);
+            a._velX = -impactVelY;
+            a._velY = impactVelX;
+            a.activate(_x, _y, _points, _size-1);
         }
     }
 
@@ -93,8 +99,9 @@ public class Asteroid extends DynamicEntity implements Poolable {
     public void onCollision(GLEntity that) {
         super.onCollision(that);
         suspend();
-        if (that instanceof DynamicEntity && _scale > 0.4 * DEFAULT_SCALE) {
-            splitIntoTwo(((DynamicEntity) that)._velX, ((DynamicEntity) that)._velY);
+        if (that instanceof DynamicEntity && _size > 0) {
+            splitIntoTwo(((DynamicEntity) that)._velX0 - _velX0,
+                    ((DynamicEntity) that)._velY0 - _velY0);
         }
     }
 

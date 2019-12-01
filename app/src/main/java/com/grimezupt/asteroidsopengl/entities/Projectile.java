@@ -38,6 +38,8 @@ public class Projectile extends DynamicEntity implements Poolable {
 
     @Override
     public void update(double dt) {
+        _velX0 = _velX;
+        _velY0 = _velY;
         super.update(dt);
         _lifespan -= dt;
         if (_lifespan <= 0){

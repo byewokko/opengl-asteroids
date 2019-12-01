@@ -15,6 +15,9 @@ public abstract class GLEntity extends Entity {
     public static final float[] modelMatrix = new float[4*4];
     public static final float[] viewportModelMatrix = new float[4*4];
     public static final float[] rotationViewportModelMatrix = new float[4*4];
+    //axis-aligned intersection test
+    static final PointF overlap = new PointF( 0 , 0 ); //Q&D PointF pool for collision detection. Assumes single threading.
+    static final PointF impact = new PointF( 0 , 0 );
 
     Mesh _mesh = null;
     float[] _color = new float[4];
@@ -27,6 +30,12 @@ public abstract class GLEntity extends Entity {
 
     public GLEntity() {
         setColors(Config.Colors.FOREGROUND);
+    }
+
+    public static float getImpactVelocity(DynamicEntity a, DynamicEntity b) {
+        impact.x = a._velX0 - b._velX0;
+        impact.y = a._velY0 - b._velY0;
+        return Utils.normalize(impact);
     }
 
     @Override
@@ -65,8 +74,7 @@ public abstract class GLEntity extends Entity {
         return _y; //assumes our mesh has been centered on [0,0] (normalized)
     }
 
-    //axis-aligned intersection test
-    static final PointF overlap = new PointF( 0 , 0 ); //Q&D PointF pool for collision detection. Assumes single threading.
+
     @SuppressWarnings("UnusedReturnValue")
     static boolean getOverlap(final GLEntity a, final GLEntity b, final PointF overlap) {
         overlap.x = 0.0f;

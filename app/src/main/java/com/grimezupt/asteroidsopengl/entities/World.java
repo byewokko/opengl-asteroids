@@ -1,5 +1,7 @@
 package com.grimezupt.asteroidsopengl.entities;
 
+import android.graphics.PointF;
+
 import com.grimezupt.asteroidsopengl.Game;
 import com.grimezupt.asteroidsopengl.InputManager;
 import com.grimezupt.asteroidsopengl.utils.Random;
@@ -52,7 +54,8 @@ public class World extends Entity {
                 a.setRandomVelocity();
                 a.activate(Random.between(0, WIDTH),
                         Random.between(0, HEIGHT),
-                        Random.between(5, 10));
+                        Random.between(5, 10),
+                        Asteroid.DEFAULT_SIZE);
             }
         }
         addEntity(_asteroidPool);
@@ -90,8 +93,12 @@ public class World extends Entity {
         // player vs. asteroids
         for (Asteroid a : _asteroidPool._activeEntities){
             if (_player.isColliding(a)){
-                _player.onCollision(a);
-                a.onCollision(_player);
+                final float magnitude = GLEntity.getImpactVelocity(_player, a);
+                // TODO: this is stupid, FIX
+                _player.onCollision(a, GLEntity.impact, magnitude);
+                GLEntity.impact.x *= -1;
+                GLEntity.impact.y *= -1;
+                a.onCollision(_player, GLEntity.impact, magnitude);
                 if (a.isActive()){
                     // asteroid destroyed!
                     _explosionPool.makeExplosion(_player, a, ExplosionPool.BIG_EXPLOSION);

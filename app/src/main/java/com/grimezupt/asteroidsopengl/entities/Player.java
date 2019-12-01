@@ -2,6 +2,7 @@ package com.grimezupt.asteroidsopengl.entities;
 
 import android.graphics.PointF;
 
+import com.grimezupt.asteroidsopengl.Config;
 import com.grimezupt.asteroidsopengl.InputManager;
 import com.grimezupt.asteroidsopengl.mesh.Triangle;
 import com.grimezupt.asteroidsopengl.utils.CollisionDetection;
@@ -13,6 +14,7 @@ public class Player extends DynamicEntity {
     private static final float THRUST = 2.5f;
     private static final float ROTATION_VELOCITY = 320f;
     private static final float MAX_VELOCITY = 200f;
+    private static final float DRAG = 2f;
     private static final float SHOOTING_COOLDOWN = 0.25f;
     private static final float RECOIL = 10f;
     private static final float KNOCKBACK = 20f;
@@ -43,6 +45,8 @@ public class Player extends DynamicEntity {
     @Override
     public void update(double dt) {
         afterCollisionUpdate();
+        _velX0 = _velX;
+        _velY0 = _velY;
         _timeToRecover -= dt;
         _shootingCooldown -= dt;
         final float velocity = (float) Utils.getVectorMagnitude(_velX, _velY);
@@ -50,7 +54,21 @@ public class Player extends DynamicEntity {
         thrust(velocity, theta);
         shoot(theta);
         _rotation += _horizontalFactor * ROTATION_VELOCITY * dt;
+
         super.update(dt);
+
+        _velX *= (1f - dt*DRAG);
+        _velY *= (1f - dt*DRAG);
+
+        blink();
+    }
+
+    private void blink() {
+        if (_timeToRecover > 0f && Utils.squareWave(_timeToRecover, 0.1f, 0.5f)){
+            setColors(Config.Colors.HIGHLIGHT);
+        } else {
+            setColors(Config.Colors.FOREGROUND);
+        }
     }
 
     private void afterCollisionUpdate() {
@@ -117,9 +135,9 @@ public class Player extends DynamicEntity {
 
     public void onCollision(Asteroid that) {
 //        super.onCollision(that);
-        final PointF relativePos = Utils.normalize(this._x - that._x, this._y - that._y);
-        _velX = relativePos.x * KNOCKBACK;
-        _velY = relativePos.y * KNOCKBACK;
+        final PointF relativeVel = Utils.normalize(this._velX0 - that._velX0, this._velY0 - that._velY0);
+        _velX = -relativeVel.x * KNOCKBACK;
+        _velY = -relativeVel.y * KNOCKBACK;
         if (_timeToRecover <= 0f) {
             takeDamage();
             recover();

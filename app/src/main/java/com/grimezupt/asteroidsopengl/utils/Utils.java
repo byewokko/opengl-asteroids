@@ -77,4 +77,9 @@ public abstract class Utils {
     public static boolean squareWave(final double time, final float period, final float dutyCycle){
         return (time % period < period*dutyCycle);
     }
+
+    public static void negateVector(PointF vector) {
+        vector.x *= -1;
+        vector.y *= -1;
+    }
 }

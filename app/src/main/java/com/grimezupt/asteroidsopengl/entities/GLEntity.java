@@ -17,7 +17,8 @@ public abstract class GLEntity extends Entity {
     public static final float[] rotationViewportModelMatrix = new float[4*4];
     //axis-aligned intersection test
     static final PointF overlap = new PointF( 0 , 0 ); //Q&D PointF pool for collision detection. Assumes single threading.
-    static final PointF impact = new PointF( 0 , 0 );
+    static final PointF impactUnit = new PointF( 0 , 0 ); //Q&D
+    static float impactMagnitude = 0f; //Q&D
 
     Mesh _mesh = null;
     float[] _color = new float[4];
@@ -26,16 +27,17 @@ public abstract class GLEntity extends Entity {
     public float _depth = 0f;
     public float _scale = 1f;
     public float _rotation = 0f;
+    public float _mass = 1f;
 
 
     public GLEntity() {
         setColors(Config.Colors.FOREGROUND);
     }
 
-    public static float getImpactVelocity(DynamicEntity a, DynamicEntity b) {
-        impact.x = a._velX0 - b._velX0;
-        impact.y = a._velY0 - b._velY0;
-        return Utils.normalize(impact);
+    public static void qdImpactVelocity(DynamicEntity a, DynamicEntity b) {
+        impactUnit.x = a._velX0 - b._velX0;
+        impactUnit.y = a._velY0 - b._velY0;
+        impactMagnitude = Utils.normalize(impactUnit);
     }
 
     @Override

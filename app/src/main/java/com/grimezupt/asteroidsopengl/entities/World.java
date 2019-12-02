@@ -1,14 +1,12 @@
 package com.grimezupt.asteroidsopengl.entities;
 
-import android.graphics.PointF;
-
 import com.grimezupt.asteroidsopengl.Game;
 import com.grimezupt.asteroidsopengl.InputManager;
 import com.grimezupt.asteroidsopengl.utils.Random;
+import com.grimezupt.asteroidsopengl.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
 
 public class World extends Entity {
     private static final String TAG = "World";
@@ -93,12 +91,10 @@ public class World extends Entity {
         // player vs. asteroids
         for (Asteroid a : _asteroidPool._activeEntities){
             if (_player.isColliding(a)){
-                final float magnitude = GLEntity.getImpactVelocity(_player, a);
-                // TODO: this is stupid, FIX
-                _player.onCollision(a, GLEntity.impact, magnitude);
-                GLEntity.impact.x *= -1;
-                GLEntity.impact.y *= -1;
-                a.onCollision(_player, GLEntity.impact, magnitude);
+                GLEntity.qdImpactVelocity(_player, a);
+                _player.onCollision(a);
+                Utils.negateVector(GLEntity.impactUnit);
+                a.onCollision(_player);
                 if (a.isActive()){
                     // asteroid destroyed!
                     _explosionPool.makeExplosion(_player, a, ExplosionPool.BIG_EXPLOSION);

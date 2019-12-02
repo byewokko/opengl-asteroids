@@ -134,10 +134,8 @@ public class Player extends DynamicEntity {
     }
 
     public void onCollision(Asteroid that) {
-//        super.onCollision(that);
-        final PointF relativeVel = Utils.normalize(this._velX0 - that._velX0, this._velY0 - that._velY0);
-        _velX = -relativeVel.x * KNOCKBACK;
-        _velY = -relativeVel.y * KNOCKBACK;
+        _velX = -impactUnit.x * KNOCKBACK;
+        _velY = -impactUnit.y * KNOCKBACK;
         if (_timeToRecover <= 0f) {
             takeDamage();
             recover();

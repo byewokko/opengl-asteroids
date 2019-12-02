@@ -63,7 +63,7 @@ public class Asteroid extends DynamicEntity implements Poolable {
         setMesh(points);
         _size = asteroidSize;
         setScale(4 + _size * 3);
-        _life = (0.5f + _size) * 60f;
+        _life = (0.5f + _size) * 200f;
         pointPool.x = _velX;
         pointPool.y = _velY;
         Utils.normalize(pointPool);
@@ -99,7 +99,7 @@ public class Asteroid extends DynamicEntity implements Poolable {
     @Override
     public void onCollision(GLEntity that) {
         super.onCollision(that);
-        if (that.isDangerous(this)) { //FIXME: this is always false because the player has just now been set to recover!
+        if (that.isDangerous(this)) {
             final float damage = impactMagnitude * that._mass;
             Log.d(TAG, String.format("damage = %s", damage));
             _life -= damage;

@@ -76,7 +76,9 @@ public class World extends Entity {
         for (Projectile p : _projectilePool._activeEntities){
             for (Asteroid a : _asteroidPool._activeEntities){
                 if (p.isColliding(a)){
+                    GLEntity.qdImpactVelocity(p, a);
                     p.onCollision(a);
+                    Utils.negateVector(GLEntity.impactUnit);
                     a.onCollision(p);
                     if (a.isActive()){
                         // asteroid destroyed!

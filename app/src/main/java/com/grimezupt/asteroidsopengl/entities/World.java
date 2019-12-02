@@ -38,8 +38,8 @@ public class World extends Entity {
         }
         _player = new Player(_projectilePool, WIDTH /2f, HEIGHT /2f);
         addEntity(_player);
-        _border = new GLBorder(WIDTH/2f, HEIGHT/2f, WIDTH, HEIGHT);
-        addEntity(_border);
+//        _border = new GLBorder(WIDTH/2f, HEIGHT/2f, WIDTH, HEIGHT);
+//        addEntity(_border);
 //        for (int points = 3; points <= 9; points++){
 //            addEntity(new Asteroid(Random.between(0, WIDTH),
 //                    Random.between(0, HEIGHT),

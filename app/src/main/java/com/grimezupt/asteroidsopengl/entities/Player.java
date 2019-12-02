@@ -15,19 +15,21 @@ public class Player extends DynamicEntity implements TimerListener {
     private static final int RECOVERED = 0;
     private static final int AWAKE = 1;
     private static final int MISSILE_LOADED = 2;
+    private static final float RECOVERY_TIME = 1.6f;
+    private static final float NUMB_TIME = 0.5f;
+    private static final float SHOOTING_COOLDOWN = 0.25f;
 
     private static final float SIZE = 5f;
     private static final float THRUST = 2.5f;
     private static final float ROTATION_VELOCITY = 320f;
     private static final float MAX_VELOCITY = 200f;
-    private static final float DRAG = 2f;
-    private static final float SHOOTING_COOLDOWN = 0.25f;
+    private static final float DRAG = 1.4f;
     private static final float RECOIL = 10f;
-    private static final float KNOCKBACK = 20f;
-    private static final float RECOVERY_TIME = 1.6f;
-    private static final float NUMB_TIME = 0.5f;
+    private static final float KNOCKBACK = 25f;
     private static final int INIT_LIFE = 5;
-    private EntityPool<Projectile> _projectilePool = null;
+
+    private JetFlame _jet = null;
+    private ProjectilePool _projectilePool = null;
     private float _horizontalFactor = 0f;
     private boolean _thrusting = false;
     private boolean _shooting = false;
@@ -38,7 +40,7 @@ public class Player extends DynamicEntity implements TimerListener {
     private boolean _isRecovering0 = false;
 
 
-    public Player(EntityPool<Projectile> projectilePool, float x, float y) {
+    public Player(ProjectilePool projectilePool, float x, float y) {
         _projectilePool = projectilePool;
         _x = x;
         _y = y;
@@ -47,6 +49,7 @@ public class Player extends DynamicEntity implements TimerListener {
         _mass = SIZE;
         _mesh = new Triangle();
         _mesh.applyAspectRatio();
+        _jet = new JetFlame();
         recover();
     }
 
@@ -64,10 +67,19 @@ public class Player extends DynamicEntity implements TimerListener {
 
         super.update(dt);
 
+        updateJet(dt);
+
         _velX *= (1f - dt*DRAG);
         _velY *= (1f - dt*DRAG);
 
         blink();
+    }
+
+    public void updateJet(double dt) {
+        _jet._x = _x;
+        _jet._y = _y;
+        _jet._rotation = _rotation + 180f;
+        _jet.update(dt);
     }
 
     private void blink() {
@@ -105,6 +117,9 @@ public class Player extends DynamicEntity implements TimerListener {
     @Override
     public void render(float[] viewportMatrix) {
         super.render(viewportMatrix);
+        if (_thrusting) {
+            _jet.render(viewportMatrix);
+        }
     }
 
     public void input(InputManager inputs) {

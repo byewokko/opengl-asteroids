@@ -75,4 +75,8 @@ public abstract class Utils {
         vector.x *= -1;
         vector.y *= -1;
     }
+
+    public static double sawtoothWave(double time, float frequency) {
+        return (time * frequency) % 1d;
+    }
 }

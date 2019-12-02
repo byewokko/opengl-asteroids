@@ -1,4 +1,4 @@
-package com.grimezupt.asteroidsopengl;
+package com.grimezupt.asteroidsopengl.input;
 
 public class InputManager {
     public float _verticalFactor = 0.0f;

@@ -73,6 +73,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             currentTime = newTime;
             accumulator += frameTime;
             while (accumulator >= dt) {
+                _game._timer.update(dt);
                 _world.update(dt);
                 accumulator -= dt;
             }

@@ -8,9 +8,13 @@ import com.grimezupt.asteroidsopengl.entities.Entity;
 import com.grimezupt.asteroidsopengl.entities.GLBorder;
 import com.grimezupt.asteroidsopengl.entities.Player;
 import com.grimezupt.asteroidsopengl.entities.World;
+import com.grimezupt.asteroidsopengl.input.InputManager;
+import com.grimezupt.asteroidsopengl.utils.Timer;
 
 public class Game extends GLSurfaceView {
     private static final String TAG = "Game";
+    public Timer _timer = new Timer();
+
     public enum Event {
         BULLET_IMPACT,
         ASTEROID_DESTROYED,

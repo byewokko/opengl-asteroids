@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 
+import com.grimezupt.asteroidsopengl.input.InputManager;
+import com.grimezupt.asteroidsopengl.input.TouchController;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private Game _game = null;

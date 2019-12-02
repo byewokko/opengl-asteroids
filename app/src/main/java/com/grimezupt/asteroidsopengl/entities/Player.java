@@ -3,13 +3,19 @@ package com.grimezupt.asteroidsopengl.entities;
 import android.graphics.PointF;
 
 import com.grimezupt.asteroidsopengl.Config;
-import com.grimezupt.asteroidsopengl.InputManager;
+import com.grimezupt.asteroidsopengl.input.InputManager;
 import com.grimezupt.asteroidsopengl.mesh.Triangle;
 import com.grimezupt.asteroidsopengl.utils.CollisionDetection;
+import com.grimezupt.asteroidsopengl.utils.TimerListener;
 import com.grimezupt.asteroidsopengl.utils.Utils;
 
-public class Player extends DynamicEntity {
+public class Player extends DynamicEntity implements TimerListener {
     private static final String TAG = "Player";
+
+    private static final int RECOVERED = 0;
+    private static final int AWAKE = 1;
+    private static final int MISSILE_LOADED = 2;
+
     private static final float SIZE = 5f;
     private static final float THRUST = 2.5f;
     private static final float ROTATION_VELOCITY = 320f;
@@ -19,15 +25,16 @@ public class Player extends DynamicEntity {
     private static final float RECOIL = 10f;
     private static final float KNOCKBACK = 20f;
     private static final float RECOVERY_TIME = 1.6f;
-    private static final float NUMB_TIME = 0.6f;
+    private static final float NUMB_TIME = 0.5f;
     private static final int INIT_LIFE = 5;
     private EntityPool<Projectile> _projectilePool = null;
     private float _horizontalFactor = 0f;
     private boolean _thrusting = false;
     private boolean _shooting = false;
-    private float _shootingCooldown = 0f;
-    private double _timeToRecover = 0f;
     public int _life = INIT_LIFE;
+    private boolean _isNumb = false;
+    private boolean _isRecovering = false;
+    private boolean _hasLoaded = true;
 
 
     public Player(EntityPool<Projectile> projectilePool, float x, float y) {
@@ -47,8 +54,6 @@ public class Player extends DynamicEntity {
         afterCollisionUpdate();
         _velX0 = _velX;
         _velY0 = _velY;
-        _timeToRecover -= dt;
-        _shootingCooldown -= dt;
         final float velocity = (float) Utils.getVectorMagnitude(_velX, _velY);
         final float theta = _rotation * RADIANS;
         thrust(velocity, theta);
@@ -64,7 +69,7 @@ public class Player extends DynamicEntity {
     }
 
     private void blink() {
-        if (_timeToRecover > 0f && Utils.squareWave(_timeToRecover, 0.1f, 0.5f)){
+        if (_isRecovering && Utils.squareWave(getTimer().getClock(), 0.1f, 0.5f)){
             setColors(Config.Colors.HIGHLIGHT);
         } else {
             setColors(Config.Colors.FOREGROUND);
@@ -83,11 +88,12 @@ public class Player extends DynamicEntity {
     }
 
     private void shoot(final float theta){
-        if (_shooting && _shootingCooldown <= 0f && _timeToRecover <= 0f) {
+        if (_shooting && _hasLoaded && !_isRecovering) {
             Projectile p = _projectilePool.pull();
             if (p != null) {
                 p.activate(_x, _y, _velX, _velY, theta);
-                _shootingCooldown = SHOOTING_COOLDOWN;
+                _hasLoaded = false;
+                getTimer().setEvent(this, MISSILE_LOADED, SHOOTING_COOLDOWN);
                 _velX -= RECOIL * Math.sin(theta);
                 _velY += RECOIL * Math.cos(theta);
             }
@@ -101,7 +107,7 @@ public class Player extends DynamicEntity {
 
     public void input(InputManager inputs) {
         _horizontalFactor = inputs._horizontalFactor;
-        if (isNumb()) {
+        if (_isNumb) {
             _thrusting = false;
             _shooting = false;
         } else {
@@ -136,7 +142,7 @@ public class Player extends DynamicEntity {
     public void onCollision(Asteroid that) {
         _velX = -impactUnit.x * KNOCKBACK;
         _velY = -impactUnit.y * KNOCKBACK;
-        if (_timeToRecover <= 0f) {
+        if (!_isRecovering) {
             takeDamage();
             recover();
         }
@@ -147,15 +153,29 @@ public class Player extends DynamicEntity {
     }
 
     private void recover() {
-        _timeToRecover = RECOVERY_TIME;
-    }
-
-    private boolean isNumb() {
-        return (_timeToRecover > RECOVERY_TIME - NUMB_TIME);
+        _isNumb = true;
+        _isRecovering = true;
+        getTimer().setEvent(this, AWAKE, NUMB_TIME);
+        getTimer().setEvent(this, RECOVERED, RECOVERY_TIME);
     }
 
     @Override
     public boolean isDangerous(GLEntity that) {
-        return (_timeToRecover < 0f);
+        return _isRecovering;
+    }
+
+    @Override
+    public void onTimerEvent(int type) {
+        switch (type) {
+            case RECOVERED:
+                _isRecovering = false;
+                break;
+            case AWAKE:
+                _isNumb = false;
+                break;
+            case MISSILE_LOADED:
+                _hasLoaded = true;
+                break;
+        }
     }
 }

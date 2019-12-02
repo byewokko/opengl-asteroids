@@ -1,7 +1,9 @@
-package com.grimezupt.asteroidsopengl;
+package com.grimezupt.asteroidsopengl.input;
 
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.grimezupt.asteroidsopengl.R;
 
 public class TouchController extends InputManager implements View.OnTouchListener {
     public TouchController(View view){

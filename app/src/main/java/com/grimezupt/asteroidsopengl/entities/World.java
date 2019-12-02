@@ -1,7 +1,7 @@
 package com.grimezupt.asteroidsopengl.entities;
 
 import com.grimezupt.asteroidsopengl.Game;
-import com.grimezupt.asteroidsopengl.InputManager;
+import com.grimezupt.asteroidsopengl.input.InputManager;
 import com.grimezupt.asteroidsopengl.utils.Random;
 import com.grimezupt.asteroidsopengl.utils.Utils;
 

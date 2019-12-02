@@ -1,18 +1,21 @@
 package com.grimezupt.asteroidsopengl.entities;
 
+import android.app.admin.DelegatedAdminReceiver;
 import android.opengl.GLES20;
 
 import com.grimezupt.asteroidsopengl.GLManager;
 import com.grimezupt.asteroidsopengl.mesh.Mesh;
+import com.grimezupt.asteroidsopengl.utils.TimerListener;
 
-public class Projectile extends DynamicEntity implements Poolable {
+public class Projectile extends DynamicEntity implements Poolable, TimerListener {
     private static final float SIZE = 10f;
     private static final float FIRE_VELOCITY = 100f;
     private static final float LIFESPAN = 3f;
     private static Mesh mesh = null; // pool
     private boolean _active = false;
-    private double _lifespan = 0d;
     private EntityPool<Projectile> _pool = null;
+
+    private static int DEAD = 0;
 
     public Projectile() {
         initMesh();
@@ -33,7 +36,7 @@ public class Projectile extends DynamicEntity implements Poolable {
         _velX = (float) (velX + FIRE_VELOCITY * Math.sin(theta));
         _velY = (float) (velY - FIRE_VELOCITY * Math.cos(theta));
         _active = true;
-        _lifespan = LIFESPAN;
+        getTimer().setEvent(this, DEAD, LIFESPAN);
     }
 
     @Override
@@ -41,10 +44,6 @@ public class Projectile extends DynamicEntity implements Poolable {
         _velX0 = _velX;
         _velY0 = _velY;
         super.update(dt);
-        _lifespan -= dt;
-        if (_lifespan <= 0){
-            suspend();
-        }
     }
 
     @Override
@@ -77,5 +76,12 @@ public class Projectile extends DynamicEntity implements Poolable {
     @Override
     public boolean isDangerous(GLEntity that) {
         return true;
+    }
+
+    @Override
+    public void onTimerEvent(int type) {
+        if (type == DEAD){
+            suspend();
+        }
     }
 }

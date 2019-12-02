@@ -2,6 +2,7 @@ package com.grimezupt.asteroidsopengl.entities;
 
 import android.graphics.PointF;
 import android.opengl.GLES20;
+import android.util.Log;
 
 import com.grimezupt.asteroidsopengl.Config;
 import com.grimezupt.asteroidsopengl.mesh.Mesh;
@@ -62,7 +63,7 @@ public class Asteroid extends DynamicEntity implements Poolable {
         setMesh(points);
         _size = asteroidSize;
         setScale(4 + _size * 3);
-        _life = (1 + _size) * 100;
+        _life = (0.5f + _size) * 60f;
         pointPool.x = _velX;
         pointPool.y = _velY;
         Utils.normalize(pointPool);
@@ -99,7 +100,9 @@ public class Asteroid extends DynamicEntity implements Poolable {
     public void onCollision(GLEntity that) {
         super.onCollision(that);
         if (that.isDangerous(this)) { //FIXME: this is always false because the player has just now been set to recover!
-            _life -= impactMagnitude * that._mass;
+            final float damage = impactMagnitude * that._mass;
+            Log.d(TAG, String.format("damage = %s", damage));
+            _life -= damage;
             if (_life <= 0f) {
                 suspend();
                 if (_size > 0) {

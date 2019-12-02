@@ -16,6 +16,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class GLRenderer implements GLSurfaceView.Renderer {
     private static final String TAG = "GLRenderer";
+    public static final double DEBUG_DT = 0.03;
     static Game _game = null;
 
     public static float METERS_TO_SHOW_X = 160f; //160m x 90m, the entire game world in view
@@ -68,7 +69,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         final double newTime = System.nanoTime() * NANOSECOND;
         final double frameTime = newTime - currentTime;
         if (Debug.isDebuggerConnected()) {
-            _world.update(0.03);
+            _game._timer.update(DEBUG_DT);
+            _world.update(DEBUG_DT);
         } else {
             currentTime = newTime;
             accumulator += frameTime;

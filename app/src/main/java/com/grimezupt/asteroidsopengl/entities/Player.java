@@ -35,6 +35,7 @@ public class Player extends DynamicEntity implements TimerListener {
     private boolean _isNumb = false;
     private boolean _isRecovering = false;
     private boolean _hasLoaded = true;
+    private boolean _isRecovering0 = false;
 
 
     public Player(EntityPool<Projectile> projectilePool, float x, float y) {
@@ -52,6 +53,7 @@ public class Player extends DynamicEntity implements TimerListener {
     @Override
     public void update(double dt) {
         afterCollisionUpdate();
+        _isRecovering0 = _isRecovering;
         _velX0 = _velX;
         _velY0 = _velY;
         final float velocity = (float) Utils.getVectorMagnitude(_velX, _velY);
@@ -161,7 +163,7 @@ public class Player extends DynamicEntity implements TimerListener {
 
     @Override
     public boolean isDangerous(GLEntity that) {
-        return _isRecovering;
+        return !_isRecovering0;
     }
 
     @Override

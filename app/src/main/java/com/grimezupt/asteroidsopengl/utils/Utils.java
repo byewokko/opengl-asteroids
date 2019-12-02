@@ -52,21 +52,14 @@ public abstract class Utils {
         return (var >= low && var <= high);
     }
 
-    public static PointF normalize(float x, float y) {
-        poolPoint.x = x;
-        poolPoint.y = y;
-        normalize(poolPoint);
-        return poolPoint;
-    }
-
     public static float normalize(final PointF pointF) {
-        float denom = 0;
+        float magnitude = 0;
         if (pointF.x != 0f || pointF.y != 0f) {
-            denom = (float) Math.sqrt(pointF.x * pointF.x + pointF.y * pointF.y);
-            pointF.x /= denom;
-            pointF.y /= denom;
+            magnitude = (float) Math.sqrt(pointF.x * pointF.x + pointF.y * pointF.y);
+            pointF.x /= magnitude;
+            pointF.y /= magnitude;
         }
-        return denom;
+        return magnitude;
     }
 
     public static float weightedAvg2(float a, float wa, float b, float wb) {

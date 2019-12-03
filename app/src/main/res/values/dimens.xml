@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="keypad_size">60dp</dimen>
-    <dimen name="keypad_margin">24dp</dimen>
+    <dimen name="keypad_size">64dp</dimen>
+    <dimen name="keypad_margin">16dp</dimen>
     <item name="keypad_alpha" type="dimen" format="float">0.6</item>
 </resources>

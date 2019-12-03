@@ -11,7 +11,7 @@ public class GLText extends GLEntity {
     public static final GLPixelFont FONT = new GLPixelFont();
     public static float GLYPH_WIDTH = GLPixelFont.WIDTH;
     public static float GLYPH_HEIGHT = GLPixelFont.HEIGHT;
-    public static float GLYPH_SPACING = 0.3f;
+    public static float GLYPH_SPACING = 0.1f;
     public static float POINT_SIZE = 6f;
 
     Mesh[] _meshes = null;

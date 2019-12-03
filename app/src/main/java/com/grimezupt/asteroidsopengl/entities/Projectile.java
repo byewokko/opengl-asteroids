@@ -3,6 +3,7 @@ package com.grimezupt.asteroidsopengl.entities;
 import android.app.admin.DelegatedAdminReceiver;
 import android.opengl.GLES20;
 
+import com.grimezupt.asteroidsopengl.Config;
 import com.grimezupt.asteroidsopengl.GLManager;
 import com.grimezupt.asteroidsopengl.mesh.Mesh;
 import com.grimezupt.asteroidsopengl.utils.TimerListener;
@@ -19,6 +20,7 @@ public class Projectile extends DynamicEntity implements Poolable, TimerListener
 
     public Projectile() {
         initMesh();
+        setColors(Config.Colors.HIGHLIGHT);
         _mass = 2f;
     }
 

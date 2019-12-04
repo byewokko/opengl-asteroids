@@ -57,6 +57,7 @@ public class Projectile extends DynamicEntity implements Poolable, TimerListener
     @Override
     public void suspend(){
         _active = false;
+        getTimer().cancelEventsOfListener(this);
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.grimezupt.asteroidsopengl.utils;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.grimezupt.asteroidsopengl.entities.Entity;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +14,7 @@ public class Timer {
     private static final int POOL_SIZE = 10;
     private double _clock = 0d;
     private final ArrayList<TimerEvent> _activeEvents = new ArrayList<>();
-    private final SparseArray<TimerEvent> _activeMap = new SparseArray<>();
+    private final ArrayList<Integer> _activeE = new ArrayList<>();
     private final ArrayList<TimerEvent> _inactiveEvents = new ArrayList<>();
     private final ArrayList<TimerEvent> _eventsToRemove = new ArrayList<>();
 
@@ -53,7 +55,12 @@ public class Timer {
         return _clock;
     }
 
-    public void cancelEvent(int eventId){ // TODO: use _activemap instead of list
-        _activeMap.remove(eventId);
+    public void cancelEventsOfListener(TimerListener listener){
+        for (TimerEvent e :
+                _activeEvents) {
+            if (e.listener == listener){
+                _eventsToRemove.add(e);
+            }
+        }
     }
 }

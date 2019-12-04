@@ -83,7 +83,7 @@ public class Player extends DynamicEntity implements TimerListener {
     }
 
     private void blink() {
-        if (_isRecovering && Utils.squareWave(getTimer().getClock(), 0.1f, 0.5f)){
+        if (_isRecovering && Utils.squareWaveBoolean(getTimer().getClock(), 0.1f, 0.5f)){
             setColors(Config.Colors.HIGHLIGHT);
         } else {
             setColors(Config.Colors.FOREGROUND);

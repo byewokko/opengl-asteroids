@@ -101,7 +101,6 @@ public class Asteroid extends DynamicEntity implements Poolable {
         super.onCollision(that);
         if (that.isDangerous(this)) {
             final float damage = impactMagnitude * that._mass;
-            Log.d(TAG, String.format("damage = %s", damage));
             _life -= damage;
             if (_life <= 0f) {
                 suspend();

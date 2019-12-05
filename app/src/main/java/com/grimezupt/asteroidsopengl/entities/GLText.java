@@ -9,6 +9,8 @@ import com.grimezupt.asteroidsopengl.mesh.Mesh;
 
 public class GLText extends GLEntity {
     public static final GLPixelFont FONT = new GLPixelFont();
+    public static final int ALIGN_LEFT = 0;
+    public static final int ALIGN_RIGHT = 1;
     public static float GLYPH_WIDTH = GLPixelFont.WIDTH;
     public static float GLYPH_HEIGHT = GLPixelFont.HEIGHT;
     public static float GLYPH_SPACING = 0.1f;
@@ -20,6 +22,7 @@ public class GLText extends GLEntity {
     private float _glyphHeight = GLYPH_HEIGHT;
     private float[] _color = Config.Colors.FOREGROUND;
     private float _pointSize = POINT_SIZE;
+    private int _align = ALIGN_LEFT;
 
     public GLText(final String s, final float x, final float y) {
         setString(s);
@@ -31,10 +34,14 @@ public class GLText extends GLEntity {
     @Override
     public void render(final float[] viewportMatrix){
         final int OFFSET = 0;
+        float alignOffset = 0;
+        if (_align == ALIGN_RIGHT){
+            alignOffset = _meshes.length * (_glyphWidth+_spacing) - _spacing;
+        }
         for(int i = 0; i < _meshes.length; i++){
             if(_meshes[i] == null){ continue; }
             Matrix.setIdentityM(modelMatrix, OFFSET); //reset model matrix
-            Matrix.translateM(modelMatrix, OFFSET, _x + (_glyphWidth+_spacing)*i, _y, _depth);
+            Matrix.translateM(modelMatrix, OFFSET, _x + (_glyphWidth+_spacing)*i - alignOffset, _y, _depth);
             Matrix.scaleM(modelMatrix, OFFSET, _scale, _scale, 1f);
             Matrix.multiplyMM(viewportModelMatrix, OFFSET, viewportMatrix, OFFSET, modelMatrix, OFFSET);
             GLManager.draw(_meshes[i], viewportModelMatrix, _color, _pointSize);
@@ -48,7 +55,7 @@ public class GLText extends GLEntity {
 
     public void setScale(float factor){
         super.setScale(factor);
-        _spacing = GLYPH_SPACING * _scale;
+//        _spacing = GLYPH_SPACING * _scale; //TODO: delet dis. scaling is handled by matrices
 //        _glyphWidth = GLYPH_WIDTH*_scale;
 //        _glyphHeight = GLYPH_HEIGHT*_yScale;
 //        _pointSize = POINT_SIZE;
@@ -66,5 +73,9 @@ public class GLText extends GLEntity {
 
     public void setString(final String s){
         _meshes = FONT.getString(s);
+    }
+
+    public void setAlign(int align) {
+        _align = align;
     }
 }

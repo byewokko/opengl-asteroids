@@ -66,12 +66,14 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     double accumulator = 0.0;
     double currentTime = System.nanoTime()*NANOSECOND;
     public void update() {
-        final double newTime = System.nanoTime() * NANOSECOND;
-        final double frameTime = newTime - currentTime;
+        final double frameTime;
         if (Debug.isDebuggerConnected()) {
+            frameTime = DEBUG_DT;
             _game._timer.update(DEBUG_DT);
             _world.update(DEBUG_DT);
         } else {
+            final double newTime = System.nanoTime() * NANOSECOND;
+            frameTime = newTime - currentTime;
             currentTime = newTime;
             accumulator += frameTime;
             while (accumulator >= dt) {
@@ -81,6 +83,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             }
         }
         _fpsQueue.put((float) frameTime);
+//        _fpsText.setString(String.format(Locale.ENGLISH,"%.0ffps", 1d/frameTime));
         _fpsText.setString(String.format(Locale.ENGLISH,"%.0ffps", 1d/_fpsQueue.readAverage()));
     }
 

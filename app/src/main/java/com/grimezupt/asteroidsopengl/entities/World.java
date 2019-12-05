@@ -11,7 +11,7 @@ import java.util.Collection;
 public class World extends Entity {
     private static final String TAG = "World";
     private static final int PROJECTILE_POOL_SIZE = 3;
-    private static final int ASTEROID_COUNT = 4;
+    private static final int ASTEROID_COUNT = 2;
     public static Game _game = null;
     public static float WIDTH = 160f;
     public static float HEIGHT = 90f;
@@ -38,13 +38,6 @@ public class World extends Entity {
         }
         _player = new Player(_projectilePool, WIDTH /2f, HEIGHT /2f);
         addEntity(_player);
-//        _border = new GLBorder(WIDTH/2f, HEIGHT/2f, WIDTH, HEIGHT);
-//        addEntity(_border);
-//        for (int points = 3; points <= 9; points++){
-//            addEntity(new Asteroid(Random.between(0, WIDTH),
-//                    Random.between(0, HEIGHT),
-//                    points));
-//        }
         _asteroidPool.init(ASTEROID_COUNT*3);
         for (int i = 0; i < ASTEROID_COUNT; i++){
             Asteroid a = _asteroidPool.pull();

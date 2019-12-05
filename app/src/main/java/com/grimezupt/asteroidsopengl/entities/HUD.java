@@ -1,11 +1,14 @@
 package com.grimezupt.asteroidsopengl.entities;
 
 import com.grimezupt.asteroidsopengl.Scoring;
+import com.grimezupt.asteroidsopengl.mesh.Mesh;
+import com.grimezupt.asteroidsopengl.mesh.Triangle;
 import com.grimezupt.asteroidsopengl.utils.TimerListener;
 
 public class HUD extends GLEntity implements TimerListener {
     public static final String TAG = "HUD";
     private static final float DEFAULT_BIGTEXT_DURATION = 3f;
+    private static final float HUD_TEXT_MARGIN = 1f;
     private boolean _showFPS = true;
     private boolean _showBigText = true;
     private float TEXT_SIZE = 10f;
@@ -17,6 +20,7 @@ public class HUD extends GLEntity implements TimerListener {
     private GLText _bigText = null;
     private GLText _fpsText = null;
     private GLEntity[] _lifeArray = null;
+    private Mesh _lifeMesh = null;
 
     public HUD() {
         init();
@@ -24,7 +28,12 @@ public class HUD extends GLEntity implements TimerListener {
 
     private void init() {
         // init score text
+        _scoreText = new GLText("00000", HUD_TEXT_MARGIN, HUD_TEXT_MARGIN);
+        _scoreText.setScale(3f);
+        _scoreText.setAlign(GLText.ALIGN_LEFT);
         // init lives array
+        _lifeMesh = new Triangle();
+        _lifeMesh.rotate(Mesh.Z, -Math.PI*0.3);
         // etc.
     }
 

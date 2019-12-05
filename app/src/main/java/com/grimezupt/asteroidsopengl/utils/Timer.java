@@ -7,6 +7,7 @@ import com.grimezupt.asteroidsopengl.entities.Entity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 public class Timer {
@@ -16,7 +17,7 @@ public class Timer {
     private final ArrayList<TimerEvent> _activeEvents = new ArrayList<>();
     private final ArrayList<Integer> _activeE = new ArrayList<>();
     private final ArrayList<TimerEvent> _inactiveEvents = new ArrayList<>();
-    private final ArrayList<TimerEvent> _eventsToRemove = new ArrayList<>();
+    private final LinkedHashSet<TimerEvent> _eventsToRemove = new LinkedHashSet<>();
 
     public Timer() {
         for (int i = 0; i < POOL_SIZE; i++) {
@@ -31,6 +32,7 @@ public class Timer {
             if (e.isDue(_clock)){
                 e.trigger();
                 _eventsToRemove.add(e);
+                Log.d(TAG, "active: " + _activeEvents.size() + ", suspended: " + _inactiveEvents.size() + ", to add: " + _eventsToRemove.size());
             }
         }
         _activeEvents.removeAll(_eventsToRemove);

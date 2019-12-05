@@ -151,7 +151,7 @@ public class Mesh {
                 String.format("incorrect width / height after scaling: %s x %s", _width, _height));
     }
 
-    private void rotate(final int axis, final double theta) {
+    public void rotate(final int axis, final double theta) {
         Utils.require(axis == X || axis == Y || axis == Z);
         final double sinTheta = Math.sin(theta);
         final double cosTheta = Math.cos(theta);

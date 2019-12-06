@@ -37,6 +37,10 @@ public abstract class GLEntity extends Entity {
     public static void qdImpactVelocity(DynamicEntity a, DynamicEntity b) {
         impactUnit.x = a._velX0 - b._velX0;
         impactUnit.y = a._velY0 - b._velY0;
+        if (impactUnit.x == 0 && impactUnit.y == 0) {
+            impactUnit.x = a._x - b._x;
+            impactUnit.y = a._y - b._y;
+        }
         impactMagnitude = Utils.normalize(impactUnit);
     }
 

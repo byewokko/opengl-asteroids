@@ -3,7 +3,7 @@ package com.grimezupt.asteroidsopengl;
 import com.grimezupt.asteroidsopengl.entities.Entity;
 
 public class Scoring {
-    private static final int MAX_LIVES = 5;
+    public static final int MAX_LIVES = 5;
     public int _level = 1;
     public int _lives = 0;
     public int _score = 0;
@@ -13,7 +13,7 @@ public class Scoring {
     }
 
     public void init(){
-        _level = 1;
+        _level = 5;
         _score = 0;
         resetLives();
     }

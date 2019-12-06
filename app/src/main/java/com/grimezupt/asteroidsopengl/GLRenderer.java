@@ -71,6 +71,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             frameTime = DEBUG_DT;
             _game._timer.update(DEBUG_DT);
             _world.update(DEBUG_DT);
+            _game._hud.update(dt);
         } else {
             final double newTime = System.nanoTime() * NANOSECOND;
             frameTime = newTime - currentTime;

@@ -54,7 +54,9 @@ public class Player extends DynamicEntity implements TimerListener {
 
     @Override
     public void update(double dt) {
-        afterCollisionUpdate();
+        if (_isDead) return;
+        _x0 = _x;
+        _y0 = _y;
         _isRecovering0 = _isRecovering;
         _velX0 = _velX;
         _velY0 = _velY;
@@ -82,15 +84,11 @@ public class Player extends DynamicEntity implements TimerListener {
     }
 
     private void blink() {
-        if (_isRecovering && Utils.squareWaveBoolean(getTimer().getClock(), 0.1f, 0.5f)){
-            setColors(Config.Colors.HIGHLIGHT);
+        if (_isRecovering && Utils.squareWaveBoolean(getTimer().getClock(), 0.15f, 0.5f)){
+            setColors(Config.Colors.HIGHDARK);
         } else {
             setColors(Config.Colors.FOREGROUND);
         }
-    }
-
-    private void afterCollisionUpdate() {
-        // TODO: update speeds accumulated from last update's collisions
     }
 
     private void thrust(final float velocity, final float theta) {
@@ -165,12 +163,14 @@ public class Player extends DynamicEntity implements TimerListener {
         _velY = -impactUnit.y * KNOCKBACK;
         if (!_isRecovering) {
             takeDamage();
-            recover();
+            if (!_isDead) recover();
         }
     }
 
     private void takeDamage() {
-        getScoring().loseLife();
+        if (!getScoring().loseLife()){
+            _isDead = true;
+        }
     }
 
     private void recover() {
@@ -182,7 +182,7 @@ public class Player extends DynamicEntity implements TimerListener {
 
     @Override
     public boolean isDangerous(GLEntity that) {
-        return !_isRecovering0;
+        return !(_isRecovering0 || _isDead);
     }
 
     @Override

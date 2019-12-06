@@ -11,6 +11,7 @@ import com.grimezupt.asteroidsopengl.utils.Utils;
 public class Asteroid extends DynamicEntity implements Poolable {
     private static final float DEFAULT_SCALE = 10;
     public static final int DEFAULT_SIZE = 2;
+    public static final int MAX_SIZE = 3;
     private boolean _active = false;
     private EntityPool<Asteroid> _pool = null;
     private int _points = 5;
@@ -44,6 +45,8 @@ public class Asteroid extends DynamicEntity implements Poolable {
     public void update(double dt) {
         _velX0 = _velX;
         _velY0 = _velY;
+        _x0 = _x;
+        _y0 = _y;
         super.update(dt);
         _color = Config.Colors.FOREGROUND;
     }

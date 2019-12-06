@@ -6,6 +6,8 @@ public abstract class DynamicEntity extends GLEntity {
     public float _velX0 = 0f;
     public float _velY = 0f;
     public float _velW = 0f; //angular velocity
+    public float _x0 = 0f;
+    public float _y0 = 0f;
 
 
     @Override
@@ -27,5 +29,10 @@ public abstract class DynamicEntity extends GLEntity {
         } else if (bottom() < 0){
             setTop(World.HEIGHT);
         }
+    }
+
+    public void undoStep(){
+        _x = _x0;
+        _y = _y0;
     }
 }

@@ -37,7 +37,21 @@ public class World extends Entity {
         _player = new Player(_projectilePool, WIDTH /2f, HEIGHT /2f);
         addEntity(_player);
         _asteroidPool.init(ASTEROID_COUNT*3);
-        for (int i = 0; i < ASTEROID_COUNT; i++){
+        addEntity(_asteroidPool);
+        _projectilePool.init(PROJECTILE_POOL_SIZE);
+        addEntity(_projectilePool);
+        newWave(getScoring()._level);
+    }
+
+    public void newWave(int level) {
+        int sizePoints = level * 2 + 2;
+        int currPoints;
+        float skipChance = Math.min(level - 1, 10) * 0.03f;
+        while (sizePoints > 0){
+            currPoints = Asteroid.MAX_SIZE;
+            while (currPoints > sizePoints || currPoints > 0 && Random.nextFloat() < skipChance){
+                currPoints--;
+            }
             Asteroid a = _asteroidPool.pull();
             if (a != null) {
                 a.setRandomVelocity();
@@ -45,12 +59,10 @@ public class World extends Entity {
                 a.activate((float) (Math.cos(theta) * WIDTH),
                         (float) (-Math.sin(theta) * WIDTH),
                         Random.between(5, 10),
-                        Asteroid.DEFAULT_SIZE);
+                        currPoints);
             }
+            sizePoints -= currPoints;
         }
-        addEntity(_asteroidPool);
-        _projectilePool.init(PROJECTILE_POOL_SIZE);
-        addEntity(_projectilePool);
     }
 
     @Override
@@ -94,8 +106,10 @@ public class World extends Entity {
             if (_player.isColliding(a)){
                 GLEntity.qdImpactVelocity(_player, a);
                 _player.onCollision(a);
+                _player.undoStep();
                 Utils.negateVector(GLEntity.impactUnit);
                 a.onCollision(_player);
+                a.undoStep();
                 if (a.isActive()){
                     // asteroid destroyed!
                     _explosionPool.makeExplosion(_player, a, ExplosionPool.BIG_EXPLOSION);

@@ -13,8 +13,8 @@ public abstract class EntityPool<E extends GLEntity & Poolable> extends Entity {
     public static final int DYNAMIC_SIZE = 1;
     private final int _sizeType;
     private ArrayList<E> _suspendedEntities = new ArrayList<>();
-    public ArrayList<E> _activeEntities = new ArrayList<>();
-    private ArrayList<E> _entitiesToAdd = new ArrayList<>();
+    ArrayList<E> _activeEntities = new ArrayList<>();
+    ArrayList<E> _entitiesToAdd = new ArrayList<>();
 
     public EntityPool(int sizeType) {
         _sizeType = sizeType;
@@ -76,5 +76,9 @@ public abstract class EntityPool<E extends GLEntity & Poolable> extends Entity {
         _activeEntities.addAll(_entitiesToAdd);
         _suspendedEntities.removeAll(_entitiesToAdd);
         _entitiesToAdd.clear();
+    }
+
+    public boolean isAllSuspended() {
+        return (_activeEntities.isEmpty() && _entitiesToAdd.isEmpty());
     }
 }

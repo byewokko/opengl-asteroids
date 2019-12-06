@@ -9,7 +9,7 @@ import com.grimezupt.asteroidsopengl.mesh.Mesh;
 import com.grimezupt.asteroidsopengl.utils.TimerListener;
 
 public class Projectile extends DynamicEntity implements Poolable, TimerListener {
-    private static final float SIZE = 10f;
+    private static final float SIZE = 11f;
     private static final float FIRE_VELOCITY = 100f;
     private static final float LIFESPAN = 3f;
     private static Mesh mesh = null; // pool

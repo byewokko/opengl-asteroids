@@ -26,18 +26,17 @@ public class Player extends DynamicEntity implements TimerListener {
     private static final float DRAG = 1.4f;
     private static final float RECOIL = 10f;
     private static final float KNOCKBACK = 25f;
-    private static final int INIT_LIFE = 5;
 
     private JetFlame _jet = null;
     private ProjectilePool _projectilePool = null;
     private float _horizontalFactor = 0f;
     private boolean _thrusting = false;
     private boolean _shooting = false;
-    public int _life = INIT_LIFE;
     private boolean _isNumb = false;
     private boolean _isRecovering = false;
     private boolean _hasLoaded = true;
     private boolean _isRecovering0 = false;
+    private boolean _isDead = false;
 
 
     public Player(ProjectilePool projectilePool, float x, float y) {
@@ -116,6 +115,7 @@ public class Player extends DynamicEntity implements TimerListener {
 
     @Override
     public void render(float[] viewportMatrix) {
+        if (_isDead) return;
         super.render(viewportMatrix);
         if (_thrusting) {
             _jet.render(viewportMatrix);
@@ -123,8 +123,12 @@ public class Player extends DynamicEntity implements TimerListener {
     }
 
     public void input(InputManager inputs) {
-        _horizontalFactor = inputs._horizontalFactor;
-        if (_isNumb) {
+        if (_isDead) {
+            _horizontalFactor = 0f;
+        } else {
+            _horizontalFactor = inputs._horizontalFactor;
+        }
+        if (_isNumb || _isDead) {
             _thrusting = false;
             _shooting = false;
         } else {
@@ -166,7 +170,7 @@ public class Player extends DynamicEntity implements TimerListener {
     }
 
     private void takeDamage() {
-
+        getScoring().loseLife();
     }
 
     private void recover() {

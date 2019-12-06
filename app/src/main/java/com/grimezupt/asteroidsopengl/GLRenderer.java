@@ -34,7 +34,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     public GLRenderer(World world) {
         _world = world;
         lastFrame = System.nanoTime();
-        _fpsText = new GLText("HELLO world", 5, 5);
+        _fpsText = new GLText("HELLO world", 1f, 1f);
         _fpsText.setScale(2f);
     }
 
@@ -79,6 +79,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             while (accumulator >= dt) {
                 _game._timer.update(dt);
                 _world.update(dt);
+                _game._hud.update(dt);
                 accumulator -= dt;
             }
         }
@@ -98,6 +99,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         final float far = 1f;
         Matrix.orthoM(_viewportMatrix, offset, left, right, bottom, top, near, far);
         _world.render(_viewportMatrix);
+        _game._hud.render(_viewportMatrix);
         _fpsText.render(_viewportMatrix);
     }
 

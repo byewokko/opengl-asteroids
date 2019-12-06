@@ -2,7 +2,6 @@ package com.grimezupt.asteroidsopengl.entities;
 
 import android.graphics.PointF;
 import android.opengl.GLES20;
-import android.util.Log;
 
 import com.grimezupt.asteroidsopengl.Config;
 import com.grimezupt.asteroidsopengl.mesh.Mesh;
@@ -16,6 +15,7 @@ public class Asteroid extends DynamicEntity implements Poolable {
     private EntityPool<Asteroid> _pool = null;
     private int _points = 5;
     private int _size = DEFAULT_SIZE;
+    private int _scoreWorth = 1;
     private float _life = 1f;
 
     private static PointF pointPool = new PointF();
@@ -54,6 +54,7 @@ public class Asteroid extends DynamicEntity implements Poolable {
     }
 
     public void suspend(){
+        getScoring().scorePoints(_scoreWorth);
         _active = false;
     }
 
@@ -64,6 +65,7 @@ public class Asteroid extends DynamicEntity implements Poolable {
         _size = asteroidSize;
         setScale(4 + _size * 3);
         _life = (0.5f + _size) * 200f;
+        _scoreWorth = (DEFAULT_SIZE - _size + 2) * 5;
         pointPool.x = _velX;
         pointPool.y = _velY;
         Utils.normalize(pointPool);
@@ -84,12 +86,14 @@ public class Asteroid extends DynamicEntity implements Poolable {
     public void splitIntoTwo(float impactVelX, float impactVelY) {
         Asteroid a = _pool.pull();
         if (a != null) {
+            a._velW = -2*_velW;
             a._velX = impactVelY;
             a._velY = -impactVelX;
             a.activate(_x, _y, _points, _size-1);
         }
         a = _pool.pull();
         if (a != null) {
+            a._velW = 2*_velW;
             a._velX = -impactVelY;
             a._velY = impactVelX;
             a.activate(_x, _y, _points, _size-1);

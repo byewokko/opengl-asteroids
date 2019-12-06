@@ -10,7 +10,7 @@ import java.nio.FloatBuffer;
 public class GLManager {
     private static final String TAG = "GLManager";
     private static final int OFFSET = 0;
-    public static final float LINE_WIDTH = 4f;
+    public static final float LINE_WIDTH = 5f;
 
     private static int _glProgramHandle;
     private static int _colorUniformHandle;

@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 
 import com.grimezupt.asteroidsopengl.entities.Entity;
 import com.grimezupt.asteroidsopengl.entities.GLBorder;
+import com.grimezupt.asteroidsopengl.entities.HUD;
 import com.grimezupt.asteroidsopengl.entities.Player;
 import com.grimezupt.asteroidsopengl.entities.World;
 import com.grimezupt.asteroidsopengl.input.InputManager;
@@ -14,6 +15,7 @@ import com.grimezupt.asteroidsopengl.utils.Timer;
 public class Game extends GLSurfaceView {
     private static final String TAG = "Game";
     public Timer _timer = new Timer();
+    public HUD _hud = null;
 
     public enum Event {
         BULLET_IMPACT,
@@ -21,12 +23,12 @@ public class Game extends GLSurfaceView {
         PLAYER_HURT,
         SHOOT,
         GAME_OVER,
-        LEVEL_CLEAR
+        LEVEL_START, GAME_START, LEVEL_CLEAR
     }
     private GLRenderer _renderer = null;
     private World _world = null;
     private Player _player = null;
-    private GLBorder _border = null;
+    public Scoring _scoring = null;
     private InputManager _controls = new InputManager();
 
     public Game(final Context context) {
@@ -43,11 +45,12 @@ public class Game extends GLSurfaceView {
         GLRenderer._game = this;
         Entity._game = this;
         _world = new World();
-//        Entity._world = _world;
+        _scoring = new Scoring();
         setEGLContextClientVersion(2);
         _renderer = new GLRenderer(_world);
         setRenderer(_renderer);
         _world.build();
+        _hud = new HUD(_scoring);
     }
 
     public void setControls(final InputManager controls) {
@@ -60,5 +63,7 @@ public class Game extends GLSurfaceView {
 
     public void onGameEvent(Event event, Entity entity){
         // TODO: play sound
+        _hud.animateEvent(event, entity);
+        _scoring.onGameEvent(event, entity);
     }
 }

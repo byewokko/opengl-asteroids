@@ -11,6 +11,7 @@ public class GLText extends GLEntity {
     public static final GLPixelFont FONT = new GLPixelFont();
     public static final int ALIGN_LEFT = 0;
     public static final int ALIGN_RIGHT = 1;
+    public static final int ALIGN_CENTER = 2;
     public static float GLYPH_WIDTH = GLPixelFont.WIDTH;
     public static float GLYPH_HEIGHT = GLPixelFont.HEIGHT;
     public static float GLYPH_SPACING = 0.1f;
@@ -31,12 +32,22 @@ public class GLText extends GLEntity {
         setScale(1f);
     }
 
+    public GLText(final float x, final float y) {
+        _x = x;
+        _y = y;
+        setScale(1f);
+    }
+
     @Override
     public void render(final float[] viewportMatrix){
         final int OFFSET = 0;
-        float alignOffset = 0;
+        final float alignOffset;
         if (_align == ALIGN_RIGHT){
             alignOffset = _meshes.length * (_glyphWidth+_spacing) - _spacing;
+        } else if (_align == ALIGN_CENTER){
+            alignOffset = (_meshes.length * (_glyphWidth+_spacing) - _spacing) * 0.5f;
+        } else {
+            alignOffset = 0;
         }
         for(int i = 0; i < _meshes.length; i++){
             if(_meshes[i] == null){ continue; }

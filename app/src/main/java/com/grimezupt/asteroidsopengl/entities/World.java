@@ -12,7 +12,6 @@ public class World extends Entity {
     private static final String TAG = "World";
     private static final int PROJECTILE_POOL_SIZE = 3;
     private static final int ASTEROID_COUNT = 2;
-    public static Game _game = null;
     public static float WIDTH = 160f;
     public static float HEIGHT = 90f;
     private static final int STAR_COUNT = 50;
@@ -23,7 +22,6 @@ public class World extends Entity {
     public final ExplosionPool _explosionPool;
 
     private Player _player = null;
-    private GLBorder _border = null;
 
 
     public World() {
@@ -43,8 +41,9 @@ public class World extends Entity {
             Asteroid a = _asteroidPool.pull();
             if (a != null) {
                 a.setRandomVelocity();
-                a.activate(Random.between(0, WIDTH),
-                        Random.between(0, HEIGHT),
+                final double theta = Random.nextFloat() * 2 * Math.PI;
+                a.activate((float) (Math.cos(theta) * WIDTH),
+                        (float) (-Math.sin(theta) * WIDTH),
                         Random.between(5, 10),
                         Asteroid.DEFAULT_SIZE);
             }
@@ -62,6 +61,13 @@ public class World extends Entity {
         collisionDetection();
         _asteroidPool.cleanup();
         _projectilePool.cleanup();
+        checkLevelUp();
+    }
+
+    private void checkLevelUp() {
+        if (_asteroidPool.isAllSuspended()){
+            _game.onGameEvent(Game.Event.LEVEL_CLEAR, this);
+        }
     }
 
     private void collisionDetection() {

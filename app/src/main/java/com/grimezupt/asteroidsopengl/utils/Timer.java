@@ -13,12 +13,12 @@ import java.util.Map;
 
 public class Timer {
     private static final String TAG = "Timer";
-    private static final int POOL_SIZE = 10;
+    private static final int POOL_SIZE = 30;
     private double _clock = 0d;
     private final ArrayList<TimerEvent> _activeEvents = new ArrayList<>();
-    private final ArrayList<Integer> _activeE = new ArrayList<>();
     private final ArrayList<TimerEvent> _inactiveEvents = new ArrayList<>();
     private final HashSet<TimerEvent> _eventsToRemove = new HashSet<>();
+    private final HashSet<TimerEvent> _eventsToAdd = new HashSet<>();
 
     public Timer() {
         for (int i = 0; i < POOL_SIZE; i++) {
@@ -33,25 +33,27 @@ public class Timer {
             if (e.isDue(_clock)){
                 e.trigger();
                 _eventsToRemove.add(e);
-//                Log.d(TAG, "active: " + _activeEvents.size() + ", suspended: "
-//                        + _inactiveEvents.size() + ", to add: " + _eventsToRemove.size());
+                Log.d(TAG, "active: " + _activeEvents.size() + ", suspended: "
+                        + _inactiveEvents.size() + ", to add: " + _eventsToRemove.size());
             }
         }
         _activeEvents.removeAll(_eventsToRemove);
         _inactiveEvents.addAll(_eventsToRemove);
         _eventsToRemove.clear();
+        _activeEvents.addAll(_eventsToAdd);
+        _eventsToAdd.clear();
     }
 
     public int setEvent(TimerListener listener, int event, double time){
         final TimerEvent e;
         if (_inactiveEvents.isEmpty()){
             e = new TimerEvent();
-            Log.d(TAG, "Event pool empty, creating new!");
+            Log.d(TAG, "Timer pool empty, creating new event!");
         } else {
             e = _inactiveEvents.remove(0);
         }
         e.set(listener, event, _clock + time);
-        _activeEvents.add(e);
+        _eventsToAdd.add(e);
         return e.id;
     }
 

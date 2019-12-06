@@ -21,7 +21,6 @@ public class GLText extends GLEntity {
     private float _spacing = GLYPH_SPACING; //spacing between characters
     private float _glyphWidth = GLYPH_WIDTH;
     private float _glyphHeight = GLYPH_HEIGHT;
-    private float[] _color = Config.Colors.FOREGROUND;
     private float _pointSize = POINT_SIZE;
     private int _align = ALIGN_LEFT;
 
@@ -88,5 +87,9 @@ public class GLText extends GLEntity {
 
     public void setAlign(int align) {
         _align = align;
+    }
+
+    public void setSpacing(float spacing) {
+        _spacing = spacing;
     }
 }

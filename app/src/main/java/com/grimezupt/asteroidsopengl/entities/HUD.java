@@ -1,5 +1,6 @@
 package com.grimezupt.asteroidsopengl.entities;
 
+import com.grimezupt.asteroidsopengl.Config;
 import com.grimezupt.asteroidsopengl.Game;
 import com.grimezupt.asteroidsopengl.Scoring;
 import com.grimezupt.asteroidsopengl.utils.TimerListener;
@@ -41,9 +42,12 @@ public class HUD extends GLEntity implements TimerListener {
         _bigText = new GLText( World.WIDTH * 0.5f, World.HEIGHT * 0.5f - BIGTEXT_HEIGHT * 2f);
         _bigText.setScale(BIGTEXT_HEIGHT);
         _bigText.setAlign(GLText.ALIGN_CENTER);
+        _bigText.setColors(Config.Colors.HIGHLIGHT);
         _subText = new GLText(World.WIDTH * 0.5f, World.HEIGHT * 0.5f + HUD_TEXT_MARGIN);
         _subText.setScale(SUBTEXT_HEIGHT);
         _subText.setAlign(GLText.ALIGN_CENTER);
+        _subText.setColors(Config.Colors.HIGHLIGHT);
+        _subText.setSpacing(0);
     }
 
     @Override
@@ -84,13 +88,17 @@ public class HUD extends GLEntity implements TimerListener {
 
     public void animateEvent(Game.Event event, Entity entity) {
         if (event == Game.Event.LEVEL_CLEAR){
-            setBigText(String.format("Level %s cleared@", _scoring._level), "Next wave incoming", -1);
-        }
-        if (event == Game.Event.GAME_START){
-            setBigText("Destroy all the asteroids@", "Press up to start.", -1);
-        }
-        if (event == Game.Event.GAME_OVER){
-            setBigText("Game over", "Press up to start again.", -1);
+            if (_scoring._wasFlawless) {
+                setBigText("Level cleared;", String.format("Flawless; +%s points;", _scoring._levelBonus), -1);
+            } else {
+                setBigText("Level cleared;", String.format("%s points bonus", _scoring._levelBonus), -1);
+            }
+        } else if (event == Game.Event.LEVEL_START){
+            setBigText(String.format("Wave %s incoming;", _scoring._level), "Get ready.", DEFAULT_BIGTEXT_DURATION);
+        } else if (event == Game.Event.GAME_START){
+            setBigText("Destroy all asteroids;", "Press @ to start.", -1);
+        } else if (event == Game.Event.GAME_OVER){
+            setBigText("Game over", "Press @ to start again.", -1);
         }
     }
 }

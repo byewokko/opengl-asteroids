@@ -42,7 +42,8 @@ public class World extends Entity {
         addEntity(_projectilePool);
         _explosionPool.init();
         addEntity(_explosionPool);
-        newWave(getScoring()._level);
+
+        _game.onGameEvent(Game.Event.GAME_START, this);
     }
 
     public void newWave(int level) {
@@ -58,8 +59,8 @@ public class World extends Entity {
             if (a != null) {
                 a.setRandomVelocity();
                 final double theta = Random.nextFloat() * 2 * Math.PI;
-                a.activate((float) (Math.cos(theta) * WIDTH),
-                        (float) (-Math.sin(theta) * WIDTH),
+                a.activate((float) (Math.cos(theta) * WIDTH + 0.5f * WIDTH),
+                        (float) (-Math.sin(theta) * WIDTH + 0.5f * HEIGHT),
                         Random.between(5, 10),
                         currPoints);
             }
@@ -80,7 +81,7 @@ public class World extends Entity {
     }
 
     private void checkLevelUp() {
-        if (_asteroidPool.isAllSuspended()){
+        if (!_game._levelBreak && _asteroidPool.isAllSuspended()){
             _game.onGameEvent(Game.Event.LEVEL_CLEAR, this);
         }
     }
@@ -142,6 +143,15 @@ public class World extends Entity {
     }
 
     public void input(InputManager inputs) {
+        if (_game._fireToContinue && inputs._pressingB){
+            _game.onGameEvent(Game.Event.LEVEL_START, this);
+        }
         _player.input(inputs);
+    }
+
+    public void onGameEvent(Game.Event event, Entity entity) {
+        if (event == Game.Event.LEVEL_START){
+            newWave(getScoring()._level);
+        }
     }
 }

@@ -68,7 +68,7 @@ public class Asteroid extends DynamicEntity implements Poolable {
         setMesh(points);
         _size = asteroidSize;
         _life = (0.5f + _size) * 200f;
-        _scoreWorth = (DEFAULT_SIZE - _size + 2) * 5;
+        _scoreWorth = (DEFAULT_SIZE - _size + 2) * 2;
         _speed = (5 - _size) * 6;
         setScale(4 + _size * 3);
         pointPool.x = _velX;

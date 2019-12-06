@@ -8,7 +8,7 @@ public class ExplosionPool extends EntityPool<ExplosionParticle> {
     public static final int BIG_EXPLOSION = 4;
     public static final int MEDIUM_EXPLOSION = 2;
     public static final int SMALL_EXPLOSION = 1;
-    public static final float SCATTER = 5f;
+    public static final float SCATTER = 10f;
     public static final int PARTICLES_PER_EXPLOSION = 15;
     public static final int DEFAULT_POOL_SIZE = 60;
 

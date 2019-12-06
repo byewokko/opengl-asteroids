@@ -13,7 +13,7 @@ public class Scoring {
     }
 
     public void init(){
-        _level = 5;
+        _level = 1;
         _score = 0;
         resetLives();
     }

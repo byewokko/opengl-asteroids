@@ -36,15 +36,17 @@ public class World extends Entity {
         }
         _player = new Player(_projectilePool, WIDTH /2f, HEIGHT /2f);
         addEntity(_player);
-        _asteroidPool.init(ASTEROID_COUNT*3);
+        _asteroidPool.init();
         addEntity(_asteroidPool);
         _projectilePool.init(PROJECTILE_POOL_SIZE);
         addEntity(_projectilePool);
+        _explosionPool.init();
+        addEntity(_explosionPool);
         newWave(getScoring()._level);
     }
 
     public void newWave(int level) {
-        int sizePoints = level * 2 + 2;
+        int sizePoints = level * 1 + 2;
         int currPoints;
         float skipChance = Math.min(level - 1, 10) * 0.03f;
         while (sizePoints > 0){
@@ -73,6 +75,7 @@ public class World extends Entity {
         collisionDetection();
         _asteroidPool.cleanup();
         _projectilePool.cleanup();
+        _explosionPool.cleanup();
         checkLevelUp();
     }
 
@@ -89,13 +92,12 @@ public class World extends Entity {
                 if (p.isColliding(a)){
                     GLEntity.qdImpactVelocity(p, a);
                     p.onCollision(a);
+                    _explosionPool.makeExplosion(p._x, p._y, ExplosionPool.SMALL_EXPLOSION);
                     Utils.negateVector(GLEntity.impactUnit);
                     a.onCollision(p);
-                    if (a.isActive()){
+                    if (!a.isActive()){
                         // asteroid destroyed!
-                        _explosionPool.makeExplosion(p, a, ExplosionPool.BIG_EXPLOSION);
-                    } else {
-                        _explosionPool.makeExplosion(p, a, ExplosionPool.SMALL_EXPLOSION);
+                        _explosionPool.makeExplosion(a._x, a._y, ExplosionPool.MEDIUM_EXPLOSION);
                     }
                     break; // bullet can damage only one asteroid
                 }
@@ -107,14 +109,14 @@ public class World extends Entity {
                 GLEntity.qdImpactVelocity(_player, a);
                 _player.onCollision(a);
                 _player.undoStep();
+                _explosionPool.makeExplosion(_player, a, ExplosionPool.SMALL_EXPLOSION);
+
                 Utils.negateVector(GLEntity.impactUnit);
                 a.onCollision(_player);
                 a.undoStep();
-                if (a.isActive()){
+                if (!a.isActive()){
                     // asteroid destroyed!
-                    _explosionPool.makeExplosion(_player, a, ExplosionPool.BIG_EXPLOSION);
-                } else {
-                    _explosionPool.makeExplosion(_player, a, ExplosionPool.SMALL_EXPLOSION);
+                    _explosionPool.makeExplosion(a._x, a._y, ExplosionPool.MEDIUM_EXPLOSION);
                 }
             }
         }

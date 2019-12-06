@@ -46,7 +46,9 @@ public class Mesh {
     private void init(final float[] geometry, final int drawMode) {
         setVertices(geometry);
         setDrawMode(drawMode);
-        normalize();
+        if (drawMode != GLES20.GL_POINTS) {
+            normalize();
+        }
     }
 
     private void setVertices(float[] geometry) {

@@ -85,8 +85,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             }
         }
         _fpsQueue.put((float) frameTime);
-//        _fpsText.setString(String.format(Locale.ENGLISH,"%.0ffps", 1d/frameTime));
-        _fpsText.setString(String.format(Locale.ENGLISH,"%.0ffps", 1d/_fpsQueue.readAverage()));
+//        _fpsText.setString(String.format(Locale.ENGLISH,"%.1ffps", 1d/frameTime));
+        _fpsText.setString(String.format(Locale.ENGLISH,"%.1ffps", 1d/_fpsQueue.readAverage()));
     }
 
     public void render() {

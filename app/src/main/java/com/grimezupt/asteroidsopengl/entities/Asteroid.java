@@ -18,6 +18,7 @@ public class Asteroid extends DynamicEntity implements Poolable {
     private int _size = DEFAULT_SIZE;
     private int _scoreWorth = 1;
     private float _life = 1f;
+    private float _speed = 1f;
 
     private static PointF pointPool = new PointF();
 
@@ -66,14 +67,15 @@ public class Asteroid extends DynamicEntity implements Poolable {
         _y = y;
         setMesh(points);
         _size = asteroidSize;
-        setScale(4 + _size * 3);
         _life = (0.5f + _size) * 200f;
         _scoreWorth = (DEFAULT_SIZE - _size + 2) * 5;
+        _speed = (5 - _size) * 6;
+        setScale(4 + _size * 3);
         pointPool.x = _velX;
         pointPool.y = _velY;
         Utils.normalize(pointPool);
-        _velX = pointPool.x * (4 - _size) * 8;
-        _velY = pointPool.y * (4 - _size) * 8;
+        _velX = pointPool.x * _speed;
+        _velY = pointPool.y * _speed;
         _active = true;
     }
 
@@ -116,8 +118,8 @@ public class Asteroid extends DynamicEntity implements Poolable {
                 }
             }
         }
-        _velX = -impactUnit.x * (4 - _size) * 8;
-        _velY = -impactUnit.y * (4 - _size) * 8;
+        _velX = -impactUnit.x * _speed;
+        _velY = -impactUnit.y * _speed;
     }
 
     @Override

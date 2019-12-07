@@ -8,10 +8,4 @@ public abstract class Config {
         public static final float[] HIGHDARK = {0.4f, 0.2f, 0.3f, 1f};
         public static final float[] BLACK = {0.1f, 0f, 0f, 1f};
     }
-    public static abstract class Physics {
-        public static final float ASTEROID_VELOCITY = 1f;
-        public static final float PLAYER_ACC = 1f;
-        public static final float PLAYER_ROTATION_VELOCITY = 1f;
-        public static final float PROJECTILE_VELOCITY = 1f;
-    }
 }

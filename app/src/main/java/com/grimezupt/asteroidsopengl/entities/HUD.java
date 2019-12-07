@@ -1,7 +1,5 @@
 package com.grimezupt.asteroidsopengl.entities;
 
-import android.content.res.Resources;
-
 import com.grimezupt.asteroidsopengl.Config;
 import com.grimezupt.asteroidsopengl.Game;
 import com.grimezupt.asteroidsopengl.R;
@@ -9,7 +7,6 @@ import com.grimezupt.asteroidsopengl.Scoring;
 import com.grimezupt.asteroidsopengl.utils.TimerListener;
 
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 public class HUD extends GLEntity implements TimerListener {
     public static final String TAG = "HUD";
@@ -18,6 +15,10 @@ public class HUD extends GLEntity implements TimerListener {
     private static final float HUD_TEXT_MARGIN = 2f;
     private static final float DEFAULT_BIGTEXT_DURATION = 3f;
     private static final float SUBTEXT_HEIGHT = 2f;
+    public static final float FPS_TEXT_SCALE = 1f;
+    public static final float FPS_TEXT_PTSIZE = 3f;
+    public static final float BIGTEXT_SPACING = 0.6f;
+    public static final float BIGTEXT_PTSIZE = 7f;
     private float TEXT_HEIGHT = 3f;
     private float LIVES_HEIGHT = 3.5f;
     private float BIGTEXT_HEIGHT = 4f;
@@ -45,9 +46,9 @@ public class HUD extends GLEntity implements TimerListener {
         _scoreText.setColors(Config.Colors.HIGHLIGHT);
         // init fps text
         _fpsText = new GLText(HUD_TEXT_MARGIN, World.HEIGHT - TEXT_HEIGHT);
-        _fpsText.setScale(1f);
+        _fpsText.setScale(FPS_TEXT_SCALE);
         _fpsText.setColors(Config.Colors.HIGHLIGHT);
-        _fpsText.setPointSize(3f);
+        _fpsText.setPointSize(FPS_TEXT_PTSIZE);
         // init lives array
         _lifeArray = new LifeArray(HUD_TEXT_MARGIN, 0);
         _lifeArray.setScale(LIVES_HEIGHT);
@@ -58,8 +59,8 @@ public class HUD extends GLEntity implements TimerListener {
         _bigText.setScale(BIGTEXT_HEIGHT);
         _bigText.setAlign(GLText.ALIGN_CENTER);
         _bigText.setColors(Config.Colors.HIGHLIGHT);
-        _bigText.setSpacing(0.6f);
-        _bigText.setPointSize(7f);
+        _bigText.setSpacing(BIGTEXT_SPACING);
+        _bigText.setPointSize(BIGTEXT_PTSIZE);
         _subText = new GLText(World.WIDTH * 0.5f, World.HEIGHT * 0.5f + HUD_TEXT_MARGIN);
         _subText.setScale(SUBTEXT_HEIGHT);
         _subText.setAlign(GLText.ALIGN_CENTER);

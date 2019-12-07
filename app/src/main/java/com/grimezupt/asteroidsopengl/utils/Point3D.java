@@ -1,4 +1,4 @@
-package com.grimezupt.asteroidsopengl;
+package com.grimezupt.asteroidsopengl.utils;
 
 public class Point3D {
     public float _x = 0f;

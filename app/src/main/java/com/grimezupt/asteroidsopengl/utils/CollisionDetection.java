@@ -2,8 +2,6 @@ package com.grimezupt.asteroidsopengl.utils;
 
 import android.graphics.PointF;
 
-import com.grimezupt.asteroidsopengl.Point3D;
-
 public abstract class CollisionDetection {
     private static final String TAG = "CollisionDetection";
     public static final float TO_DEGREES = (float)(180.0 / Math.PI);

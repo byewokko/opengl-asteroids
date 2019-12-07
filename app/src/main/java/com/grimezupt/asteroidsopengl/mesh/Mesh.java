@@ -3,7 +3,7 @@ package com.grimezupt.asteroidsopengl.mesh;
 import android.graphics.PointF;
 import android.opengl.GLES20;
 
-import com.grimezupt.asteroidsopengl.Point3D;
+import com.grimezupt.asteroidsopengl.utils.Point3D;
 import com.grimezupt.asteroidsopengl.utils.Utils;
 
 import java.nio.ByteBuffer;

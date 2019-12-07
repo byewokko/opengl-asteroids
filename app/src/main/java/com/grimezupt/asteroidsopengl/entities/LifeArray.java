@@ -16,7 +16,6 @@ public class LifeArray extends GLEntity {
     private int _align = ALIGN_LEFT;
     private static int MAX_LIVES = Scoring.MAX_LIVES;
     private int _lives = 0;
-    private static final float[] ACTIVE_COLOR = Config.Colors.FOREGROUND;
     private static final float[] INACTIVE_COLOR = Config.Colors.HIGHDARK;
 
     public LifeArray(final float x, final float y) {
@@ -43,17 +42,17 @@ public class LifeArray extends GLEntity {
         final int OFFSET = 0;
         final float alignOffset;
         if (_align == ALIGN_RIGHT){
-            alignOffset = MAX_LIVES * (_mesh._width+SPACING) - SPACING;
+            alignOffset = MAX_LIVES * (_mesh._width*(1+SPACING)) - SPACING*_mesh._width;
         } else if (_align == ALIGN_CENTER){
-            alignOffset = (MAX_LIVES * (_mesh._width+SPACING) - SPACING) * 0.5f;
+            alignOffset = (MAX_LIVES * (_mesh._width*(1+SPACING)) - SPACING*_mesh._width) * 0.5f;
         } else {
             alignOffset = 0;
         }
-        float[] color = ACTIVE_COLOR;
+        float[] color = _color;
         for(int i = 0; i < MAX_LIVES; i++) {
             if (i == _lives) color = INACTIVE_COLOR;
             Matrix.setIdentityM(modelMatrix, OFFSET); //reset model matrix
-            Matrix.translateM(modelMatrix, OFFSET, _x + (_mesh._width + SPACING) * i - alignOffset, _y, _depth);
+            Matrix.translateM(modelMatrix, OFFSET, _x + (_mesh._width*(1+SPACING)) * i - alignOffset, _y, _depth);
             Matrix.scaleM(modelMatrix, OFFSET, _scale, _scale, 1f);
             Matrix.multiplyMM(viewportModelMatrix, OFFSET, viewportMatrix, OFFSET, modelMatrix, OFFSET);
             GLManager.draw(_mesh, viewportModelMatrix, color);

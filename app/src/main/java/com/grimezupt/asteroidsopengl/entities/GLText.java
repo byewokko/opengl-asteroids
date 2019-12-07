@@ -14,7 +14,7 @@ public class GLText extends GLEntity {
     public static final int ALIGN_CENTER = 2;
     public static float GLYPH_WIDTH = GLPixelFont.WIDTH;
     public static float GLYPH_HEIGHT = GLPixelFont.HEIGHT;
-    public static float GLYPH_SPACING = 0.3f;
+    public static float GLYPH_SPACING = 0.8f;
     public static float POINT_SIZE = 6f;
 
     Mesh[] _meshes = null;
@@ -41,17 +41,19 @@ public class GLText extends GLEntity {
     public void render(final float[] viewportMatrix){
         final int OFFSET = 0;
         final float alignOffset;
+        final float spacing = _spacing;
+        final float glyphWidth = _scale;
         if (_align == ALIGN_RIGHT){
-            alignOffset = _meshes.length * (_glyphWidth*(1+_spacing)) - _glyphWidth*_spacing;
+            alignOffset = _meshes.length * (glyphWidth*(1+spacing));
         } else if (_align == ALIGN_CENTER){
-            alignOffset = (_meshes.length * (_glyphWidth*(1+_spacing)) - _glyphWidth*_spacing) * 0.5f;
+            alignOffset = (_meshes.length * (glyphWidth*(1+spacing))) * 0.5f;
         } else {
             alignOffset = 0;
         }
         for(int i = 0; i < _meshes.length; i++){
             if(_meshes[i] == null){ continue; }
             Matrix.setIdentityM(modelMatrix, OFFSET); //reset model matrix
-            Matrix.translateM(modelMatrix, OFFSET, _x + (_glyphWidth*(1+_spacing))*i - alignOffset, _y, _depth);
+            Matrix.translateM(modelMatrix, OFFSET, _x + (glyphWidth*(1+spacing))*i - alignOffset, _y, _depth);
             Matrix.scaleM(modelMatrix, OFFSET, _scale, _scale, 1f);
             Matrix.multiplyMM(viewportModelMatrix, OFFSET, viewportMatrix, OFFSET, modelMatrix, OFFSET);
             GLManager.draw(_meshes[i], viewportModelMatrix, _color, _pointSize);
@@ -91,5 +93,9 @@ public class GLText extends GLEntity {
 
     public void setSpacing(float spacing) {
         _spacing = spacing;
+    }
+
+    public void setPointSize(float pointSize){
+        _pointSize = pointSize;
     }
 }

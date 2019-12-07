@@ -4,4 +4,14 @@
     <string name="gamepad_btn_right">▶</string>
     <string name="gamepad_btn_b">•</string>
     <string name="gamepad_btn_a">▲</string>
+    <string name="level_cleared">Level cleared!</string>
+    <string name="level_cleared_flawless_sub">Flawless! +%d points!</string>
+    <string name="level_cleared_sub">%s points bonus</string>
+    <string name="wave_incoming">Wave %s incoming</string>
+    <string name="wave_incoming_sub">Go!</string>
+    <string name="game_start">Destroy all asteroids!</string>
+    <string name="game_start_sub">Press @ to start</string>
+    <string name="game_over">Game over</string>
+    <string name="final_score_sub">Final score: %s</string>
+    <string name="game_over_sub">Press @ to start again</string>
 </resources>

@@ -8,6 +8,7 @@ import com.grimezupt.asteroidsopengl.utils.Utils;
 public class JetFlame extends GLEntity {
     private static final float SIZE = 2.5f;
     public static final float Y_OFFSET = 1.6f;
+    public static final float FREQUENCY = 6f;
 
     public JetFlame() {
         setColors(Config.Colors.HIGHLIGHT);
@@ -19,6 +20,6 @@ public class JetFlame extends GLEntity {
 
     @Override
     public void update(double dt) {
-        setScale((float) (SIZE - Utils.sawtoothWave(getTimer().getClock(), 6f)));
+        setScale((float) (SIZE - Utils.sawtoothWave(getTimer().getClock(), FREQUENCY)));
     }
 }

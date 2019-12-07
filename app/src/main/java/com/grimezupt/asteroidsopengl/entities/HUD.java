@@ -1,11 +1,15 @@
 package com.grimezupt.asteroidsopengl.entities;
 
+import android.content.res.Resources;
+
 import com.grimezupt.asteroidsopengl.Config;
 import com.grimezupt.asteroidsopengl.Game;
+import com.grimezupt.asteroidsopengl.R;
 import com.grimezupt.asteroidsopengl.Scoring;
 import com.grimezupt.asteroidsopengl.utils.TimerListener;
 
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class HUD extends GLEntity implements TimerListener {
     public static final String TAG = "HUD";
@@ -15,6 +19,7 @@ public class HUD extends GLEntity implements TimerListener {
     private static final float DEFAULT_BIGTEXT_DURATION = 3f;
     private static final float SUBTEXT_HEIGHT = 2f;
     private float TEXT_HEIGHT = 3f;
+    private float LIVES_HEIGHT = 3.5f;
     private float BIGTEXT_HEIGHT = 4f;
     private boolean _showFPS = true;
     private boolean _showBigText = false;
@@ -37,23 +42,28 @@ public class HUD extends GLEntity implements TimerListener {
         _scoreText = new GLText(World.WIDTH - HUD_TEXT_MARGIN, HUD_TEXT_MARGIN);
         _scoreText.setScale(TEXT_HEIGHT);
         _scoreText.setAlign(GLText.ALIGN_RIGHT);
+        _scoreText.setColors(Config.Colors.HIGHLIGHT);
         // init fps text
-        _fpsText = new GLText(HUD_TEXT_MARGIN, HUD_TEXT_MARGIN);
-        _fpsText.setScale(TEXT_HEIGHT);
+        _fpsText = new GLText(HUD_TEXT_MARGIN, World.HEIGHT - TEXT_HEIGHT);
+        _fpsText.setScale(1f);
+        _fpsText.setColors(Config.Colors.HIGHLIGHT);
+        _fpsText.setPointSize(3f);
         // init lives array
-        _lifeArray = new LifeArray(World.WIDTH * 0.5f, 0);
-        _lifeArray.setScale(TEXT_HEIGHT);
-        _lifeArray.setAlign(LifeArray.ALIGN_CENTER);
+        _lifeArray = new LifeArray(HUD_TEXT_MARGIN, 0);
+        _lifeArray.setScale(LIVES_HEIGHT);
+        _lifeArray.setAlign(LifeArray.ALIGN_LEFT);
+        _lifeArray.setColors(Config.Colors.HIGHLIGHT);
         // etc.
         _bigText = new GLText( World.WIDTH * 0.5f, World.HEIGHT * 0.5f - BIGTEXT_HEIGHT * 2f);
         _bigText.setScale(BIGTEXT_HEIGHT);
         _bigText.setAlign(GLText.ALIGN_CENTER);
         _bigText.setColors(Config.Colors.HIGHLIGHT);
+        _bigText.setSpacing(0.6f);
+        _bigText.setPointSize(7f);
         _subText = new GLText(World.WIDTH * 0.5f, World.HEIGHT * 0.5f + HUD_TEXT_MARGIN);
         _subText.setScale(SUBTEXT_HEIGHT);
         _subText.setAlign(GLText.ALIGN_CENTER);
         _subText.setColors(Config.Colors.HIGHLIGHT);
-        _subText.setSpacing(0);
     }
 
     @Override
@@ -92,24 +102,34 @@ public class HUD extends GLEntity implements TimerListener {
         if (type == BIGTEXT_EXPIRED) {
             _showBigText = false;
         } else if (type == GAMEOVER_TEXT_CHANGE && isGameOver()) {
-            setBigText("Game over", "Press @ to start again.", -1);
+            setBigText(getStringResource(R.string.game_over),
+                    getStringResource(R.string.game_over_sub), -1);
         }
     }
 
     public void animateEvent(Game.Event event, Entity entity) {
         if (event == Game.Event.LEVEL_CLEAR){
             if (_scoring._wasFlawless) {
-                setBigText("Level cleared;", String.format("Flawless; +%s points;", _scoring._levelBonus), -1);
+                setBigText(getStringResource(R.string.level_cleared),
+                        String.format(getStringResource(R.string.level_cleared_flawless_sub), _scoring._levelBonus), -1);
             } else {
-                setBigText("Level cleared;", String.format("%s points bonus", _scoring._levelBonus), -1);
+                setBigText(getStringResource(R.string.level_cleared),
+                        String.format(getStringResource(R.string.level_cleared_sub), _scoring._levelBonus), -1);
             }
         } else if (event == Game.Event.LEVEL_START){
-            setBigText(String.format("Wave %s incoming", _scoring._level), "Go;", DEFAULT_BIGTEXT_DURATION);
+            setBigText(String.format(getStringResource(R.string.wave_incoming), _scoring._level),
+                    getStringResource(R.string.wave_incoming_sub), DEFAULT_BIGTEXT_DURATION);
         } else if (event == Game.Event.GAME_START){
-            setBigText("Destroy all asteroids;", "Press @ to start.", -1);
+            setBigText(getStringResource(R.string.game_start),
+                    getStringResource(R.string.game_start_sub), -1);
         } else if (event == Game.Event.GAME_OVER){
-            setBigText("Game over", String.format("Final score: %s", _scoring._score), -1);
+            setBigText(getStringResource(R.string.game_over),
+                    String.format(getStringResource(R.string.final_score_sub), _scoring._score), -1);
             getTimer().setEvent(this, GAMEOVER_TEXT_CHANGE, DEFAULT_BIGTEXT_DURATION);
         }
+    }
+
+    private String getStringResource(int resId){
+        return _game.getResources().getString(resId).replace("!", ";");
     }
 }

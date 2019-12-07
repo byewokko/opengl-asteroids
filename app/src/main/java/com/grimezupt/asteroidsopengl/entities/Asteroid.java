@@ -12,6 +12,15 @@ public class Asteroid extends DynamicEntity implements Poolable {
     private static final float DEFAULT_SCALE = 10;
     public static final int DEFAULT_SIZE = 2;
     public static final int MAX_SIZE = 3;
+    public static final float INIT_LIFE_C0 = 100f;
+    public static final float INIT_LIFE_C1 = 200f;
+    public static final int SCORE_WORTH_C1 = -2;
+    public static final int SCORE_WORTH_C0 = 8;
+    public static final float SPEED_C0 = 30;
+    public static final float SPEED_C1 = -6;
+    public static final float LEVEL_TO_SPEED = 1f;
+    public static final float SCALE_C0 = 4;
+    public static final float SCALE_C1 = 3;
     private boolean _active = false;
     private EntityPool<Asteroid> _pool = null;
     private int _points = 5;
@@ -27,10 +36,8 @@ public class Asteroid extends DynamicEntity implements Poolable {
     }
 
     public void setRandomVelocity() {
-        final float velocity = Random.between(10f, 20f);
-        final float angle = Random.between(0f, (float) (Math.PI * 2f));
-        _velX = (float) (Math.cos(angle) * velocity);
-        _velY = (float) (Math.sin(angle) * velocity);
+        _velX = Random.between(-10f, 10f);
+        _velY = Random.between(-10f, 10f);
         _velW = Random.between(-30f, 30f);
     }
 
@@ -39,7 +46,6 @@ public class Asteroid extends DynamicEntity implements Poolable {
         final float[] vertices = Mesh.regularPolygonGeometry(points);
         _mesh = new Mesh(vertices, GLES20.GL_LINES);
         _mesh.applyAspectRatio();
-//        _mesh.setVertexAverageOrigin();
     }
 
     @Override
@@ -67,10 +73,13 @@ public class Asteroid extends DynamicEntity implements Poolable {
         _y = y;
         setMesh(points);
         _size = asteroidSize;
-        _life = (0.5f + _size) * 200f;
-        _scoreWorth = (DEFAULT_SIZE - _size + 2) * 2;
-        _speed = (5 - _size) * 6;
-        setScale(4 + _size * 3);
+        _life = INIT_LIFE_C0 + _size * INIT_LIFE_C1;
+        _scoreWorth = _size * SCORE_WORTH_C1 + SCORE_WORTH_C0;
+        _speed = SPEED_C0 + SPEED_C1 * _size + LEVEL_TO_SPEED * getScoring()._level;
+        setScale(SCALE_C0 + _size * SCALE_C1);
+        if (_velX == 0 && _velY == 0) {
+            setRandomVelocity();
+        }
         pointPool.x = _velX;
         pointPool.y = _velY;
         Utils.normalize(pointPool);

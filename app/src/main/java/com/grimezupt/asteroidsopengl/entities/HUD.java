@@ -5,15 +5,18 @@ import com.grimezupt.asteroidsopengl.Game;
 import com.grimezupt.asteroidsopengl.Scoring;
 import com.grimezupt.asteroidsopengl.utils.TimerListener;
 
+import java.util.Locale;
+
 public class HUD extends GLEntity implements TimerListener {
     public static final String TAG = "HUD";
-    private static final float DEFAULT_BIGTEXT_DURATION = 3f;
-    private static final float HUD_TEXT_MARGIN = 2f;
     public static final int BIGTEXT_EXPIRED = 0;
+    private static final int GAMEOVER_TEXT_CHANGE = 1;
+    private static final float HUD_TEXT_MARGIN = 2f;
+    private static final float DEFAULT_BIGTEXT_DURATION = 3f;
     private static final float SUBTEXT_HEIGHT = 2f;
     private float TEXT_HEIGHT = 3f;
     private float BIGTEXT_HEIGHT = 4f;
-    private boolean _showFPS = false;
+    private boolean _showFPS = true;
     private boolean _showBigText = false;
 
     private Scoring _scoring = null;
@@ -34,8 +37,11 @@ public class HUD extends GLEntity implements TimerListener {
         _scoreText = new GLText(World.WIDTH - HUD_TEXT_MARGIN, HUD_TEXT_MARGIN);
         _scoreText.setScale(TEXT_HEIGHT);
         _scoreText.setAlign(GLText.ALIGN_RIGHT);
+        // init fps text
+        _fpsText = new GLText(HUD_TEXT_MARGIN, HUD_TEXT_MARGIN);
+        _fpsText.setScale(TEXT_HEIGHT);
         // init lives array
-        _lifeArray = new LifeArray(World.WIDTH * 0.5f, HUD_TEXT_MARGIN);
+        _lifeArray = new LifeArray(World.WIDTH * 0.5f, 0);
         _lifeArray.setScale(TEXT_HEIGHT);
         _lifeArray.setAlign(LifeArray.ALIGN_CENTER);
         // etc.
@@ -52,7 +58,7 @@ public class HUD extends GLEntity implements TimerListener {
 
     @Override
     public void update(double dt) {
-        // TODO: update FPS
+        _fpsText.setString(String.format(Locale.ENGLISH,"%.1ffps", _game.getAvgFPS()));
         _scoreText.setString(String.valueOf(_scoring._score));
         _lifeArray.setLives(_scoring._lives);
     }
@@ -83,7 +89,11 @@ public class HUD extends GLEntity implements TimerListener {
 
     @Override
     public void onTimerEvent(int type) {
-        _showBigText = false;
+        if (type == BIGTEXT_EXPIRED) {
+            _showBigText = false;
+        } else if (type == GAMEOVER_TEXT_CHANGE && isGameOver()) {
+            setBigText("Game over", "Press @ to start again.", -1);
+        }
     }
 
     public void animateEvent(Game.Event event, Entity entity) {
@@ -94,11 +104,12 @@ public class HUD extends GLEntity implements TimerListener {
                 setBigText("Level cleared;", String.format("%s points bonus", _scoring._levelBonus), -1);
             }
         } else if (event == Game.Event.LEVEL_START){
-            setBigText(String.format("Wave %s incoming;", _scoring._level), "Get ready.", DEFAULT_BIGTEXT_DURATION);
+            setBigText(String.format("Wave %s incoming", _scoring._level), "Go;", DEFAULT_BIGTEXT_DURATION);
         } else if (event == Game.Event.GAME_START){
             setBigText("Destroy all asteroids;", "Press @ to start.", -1);
         } else if (event == Game.Event.GAME_OVER){
-            setBigText("Game over", "Press @ to start again.", -1);
+            setBigText("Game over", String.format("Final score: %s", _scoring._score), -1);
+            getTimer().setEvent(this, GAMEOVER_TEXT_CHANGE, DEFAULT_BIGTEXT_DURATION);
         }
     }
 }

@@ -81,4 +81,11 @@ public abstract class EntityPool<E extends GLEntity & Poolable> extends Entity {
     public boolean isAllSuspended() {
         return (_activeEntities.isEmpty() && _entitiesToAdd.isEmpty());
     }
+
+    public void suspendAll() {
+        for (E e : _activeEntities){
+            e.suspend();
+        }
+        cleanup();
+    }
 }

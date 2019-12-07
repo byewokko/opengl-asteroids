@@ -11,7 +11,10 @@ import java.util.Collection;
 public class World extends Entity {
     private static final String TAG = "World";
     private static final int PROJECTILE_POOL_SIZE = 3;
-    private static final int ASTEROID_COUNT = 2;
+    public static final int WAVE_SIZE_POINTS_C0 = 2;
+    public static final int WAVE_SIZE_POINTS_C1 = 1;
+    public static final float WAVE_SKIP_CHANCE_C1 = 0.03f;
+    public static final float WAVE_SKIP_CHANCE_MAX = 0.3f;
     public static float WIDTH = 160f;
     public static float HEIGHT = 90f;
     private static final int STAR_COUNT = 50;
@@ -42,14 +45,12 @@ public class World extends Entity {
         addEntity(_projectilePool);
         _explosionPool.init();
         addEntity(_explosionPool);
-
-        _game.onGameEvent(Game.Event.GAME_START, this);
     }
 
     public void newWave(int level) {
-        int sizePoints = level * 1 + 2;
+        int sizePoints = level * WAVE_SIZE_POINTS_C1 + WAVE_SIZE_POINTS_C0;
         int currPoints;
-        float skipChance = Math.min(level - 1, 10) * 0.03f;
+        float skipChance = Math.min((level - 1)* WAVE_SKIP_CHANCE_C1, WAVE_SKIP_CHANCE_MAX);
         while (sizePoints > 0){
             currPoints = Asteroid.MAX_SIZE;
             while (currPoints > sizePoints || currPoints > 0 && Random.nextFloat() < skipChance){
@@ -105,6 +106,7 @@ public class World extends Entity {
             }
         }
         // player vs. asteroids
+        if (_game._gameOver) return;
         for (Asteroid a : _asteroidPool._activeEntities){
             if (_player.isColliding(a)){
                 GLEntity.qdImpactVelocity(_player, a);
@@ -143,8 +145,12 @@ public class World extends Entity {
     }
 
     public void input(InputManager inputs) {
-        if (_game._fireToContinue && inputs._pressingB){
-            _game.onGameEvent(Game.Event.LEVEL_START, this);
+        if (_game._fireToContinue && inputs._justReleasedB){
+            if (isGameOver()) {
+                _game.onGameEvent(Game.Event.GAME_RESTART, this);
+            } else {
+                _game.onGameEvent(Game.Event.LEVEL_START, this);
+            }
         }
         _player.input(inputs);
     }
@@ -152,6 +158,11 @@ public class World extends Entity {
     public void onGameEvent(Game.Event event, Entity entity) {
         if (event == Game.Event.LEVEL_START){
             newWave(getScoring()._level);
+        } else if (event == Game.Event.GAME_OVER){
+            _explosionPool.makeExplosion(_player._x, _player._y, ExplosionPool.BIG_EXPLOSION);
+        } else if (event == Game.Event.GAME_RESTART){
+            _player.reset(WIDTH*0.5f, HEIGHT*0.5f);
+            _asteroidPool.suspendAll();
         }
     }
 }

@@ -19,4 +19,8 @@ public abstract class Entity {
     public Scoring getScoring(){
         return _game._scoring;
     }
+
+    boolean isGameOver(){
+        return _game._gameOver;
+    }
 }

@@ -12,7 +12,7 @@ public class ExplosionParticle extends DynamicEntity implements Poolable, TimerL
     public static final float VELOCITY_MEAN = 100f;
     public static final float SIZE_CHANGE = 10f;
     public static final float VELOCITY_SD = 30f;
-    public static final float INIT_POINT_SIZE = 2f;
+    public static final float INIT_POINT_SIZE = 2.5f;
     private boolean _active = false;
     private EntityPool _pool = null;
     private float _pointSize = INIT_POINT_SIZE;
@@ -24,6 +24,7 @@ public class ExplosionParticle extends DynamicEntity implements Poolable, TimerL
     public ExplosionParticle() {
         initMesh();
         setColors(Config.Colors.HIGHLIGHT);
+        _wrap = false;
     }
 
     private void initMesh() {

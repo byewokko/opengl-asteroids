@@ -8,6 +8,7 @@ public abstract class DynamicEntity extends GLEntity {
     public float _velW = 0f; //angular velocity
     public float _x0 = 0f;
     public float _y0 = 0f;
+    boolean _wrap = true;
 
 
     @Override
@@ -15,7 +16,7 @@ public abstract class DynamicEntity extends GLEntity {
         _x += _velX * dt;
         _y += _velY * dt;
         _rotation += _velW * dt;
-        wrap();
+        if (_wrap) wrap();
     }
 
     void wrap() {

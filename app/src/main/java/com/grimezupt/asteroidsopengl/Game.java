@@ -16,10 +16,12 @@ public class Game extends GLSurfaceView implements TimerListener {
     private static final String TAG = "Game";
     public static final float LEVEL_BREAK_TIME = 3f;
     public static final int TIMER_LEVEL_START = 0;
+    private static final int TIMER_GAMEOVER_HUD = 1;
     public Timer _timer = new Timer();
     public HUD _hud = null;
     public boolean _levelBreak = true;
     public boolean _fireToContinue = true;
+    public boolean _gameOver = false;
 
 
     public enum Event {
@@ -28,11 +30,10 @@ public class Game extends GLSurfaceView implements TimerListener {
         PLAYER_HURT,
         SHOOT,
         GAME_OVER,
-        LEVEL_START, GAME_START, LEVEL_CLEAR
+        LEVEL_START, GAME_START, GAME_RESTART, LEVEL_CLEAR
     }
     private GLRenderer _renderer = null;
     private World _world = null;
-    private Player _player = null;
     public Scoring _scoring = null;
     private InputManager _controls = new InputManager();
     public Game(final Context context) {
@@ -46,10 +47,9 @@ public class Game extends GLSurfaceView implements TimerListener {
     }
 
     private void init(){
-        _levelBreak = true;
-        _fireToContinue = true;
         GLRenderer._game = this;
         Entity._game = this;
+        Scoring._game = this;
         _world = new World();
         _scoring = new Scoring();
         setEGLContextClientVersion(2);
@@ -57,6 +57,7 @@ public class Game extends GLSurfaceView implements TimerListener {
         setRenderer(_renderer);
         _hud = new HUD(_scoring);
         _world.build();
+        onGameEvent(Event.GAME_START, null);
     }
 
     public void setControls(final InputManager controls) {
@@ -68,16 +69,30 @@ public class Game extends GLSurfaceView implements TimerListener {
     }
 
     public void onGameEvent(Event event, Entity entity){
-        // TODO: play sound
-        _scoring.onGameEvent(event, entity);
-        _world.onGameEvent(event, entity);
-        _hud.animateEvent(event, entity);
         if (event == Event.LEVEL_CLEAR){
             _timer.setEvent(this, TIMER_LEVEL_START, LEVEL_BREAK_TIME);
             _levelBreak = true;
         } else if (event == Event.LEVEL_START){
             _fireToContinue = false;
             _levelBreak = false;
+        } else if (event == Event.GAME_START){
+            _fireToContinue = true;
+            _levelBreak = true;
+        } else if (event == Event.GAME_OVER){
+            _fireToContinue = true;
+            _levelBreak = true;
+            _gameOver = true;
+        }
+        // TODO: play sound
+        _scoring.onGameEvent(event, entity);
+        _world.onGameEvent(event, entity);
+        _hud.animateEvent(event, entity);
+
+        if (event == Event.GAME_RESTART){
+            _fireToContinue = false;
+            _levelBreak = false;
+            _gameOver = false;
+            onGameEvent(Event.LEVEL_START, null);
         }
     }
 
@@ -86,5 +101,9 @@ public class Game extends GLSurfaceView implements TimerListener {
         if (type == TIMER_LEVEL_START){
             onGameEvent(Event.LEVEL_START, null);
         }
+    }
+
+    public float getAvgFPS(){
+        return _renderer.getAvgFPS();
     }
 }

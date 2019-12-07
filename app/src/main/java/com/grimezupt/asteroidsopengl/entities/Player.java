@@ -17,7 +17,7 @@ public class Player extends DynamicEntity implements TimerListener {
     private static final int MISSILE_LOADED = 2;
     private static final float RECOVERY_TIME = 1.6f;
     private static final float NUMB_TIME = 0.5f;
-    private static final float SHOOTING_COOLDOWN = 0.25f;
+    private static final float SHOOTING_COOLDOWN = 0.15f;
 
     private static final float SIZE = 5f;
     private static final float THRUST = 2.5f;
@@ -36,25 +36,21 @@ public class Player extends DynamicEntity implements TimerListener {
     private boolean _isRecovering = false;
     private boolean _hasLoaded = true;
     private boolean _isRecovering0 = false;
-    private boolean _isDead = false;
 
 
     public Player(ProjectilePool projectilePool, float x, float y) {
         _projectilePool = projectilePool;
-        _x = x;
-        _y = y;
-        _rotation = 0f;
         setScale(SIZE);
         _mass = SIZE;
         _mesh = new Triangle();
         _mesh.applyAspectRatio();
         _jet = new JetFlame();
-        recover();
+        reset(x, y);
     }
 
     @Override
     public void update(double dt) {
-        if (_isDead) return;
+        if (isGameOver()) return;
         _x0 = _x;
         _y0 = _y;
         _isRecovering0 = _isRecovering;
@@ -84,7 +80,9 @@ public class Player extends DynamicEntity implements TimerListener {
     }
 
     private void blink() {
-        if (_isRecovering && Utils.squareWaveBoolean(getTimer().getClock(), 0.15f, 0.5f)){
+        final float period = 0.15f;
+        final float dutyCycle = 0.5f;
+        if (_isRecovering && Utils.squareWaveBoolean(getTimer().getClock(), period, dutyCycle)){
             setColors(Config.Colors.HIGHDARK);
         } else {
             setColors(Config.Colors.FOREGROUND);
@@ -99,7 +97,7 @@ public class Player extends DynamicEntity implements TimerListener {
     }
 
     private void shoot(final float theta){
-        if (_shooting && _hasLoaded && !_isRecovering) {
+        if (_shooting && _hasLoaded && !_isRecovering && !_game._fireToContinue) {
             Projectile p = _projectilePool.pull();
             if (p != null) {
                 p.activate(_x, _y, _velX, _velY, theta);
@@ -113,7 +111,7 @@ public class Player extends DynamicEntity implements TimerListener {
 
     @Override
     public void render(float[] viewportMatrix) {
-        if (_isDead) return;
+        if (isGameOver()) return;
         super.render(viewportMatrix);
         if (_thrusting) {
             _jet.render(viewportMatrix);
@@ -121,17 +119,17 @@ public class Player extends DynamicEntity implements TimerListener {
     }
 
     public void input(InputManager inputs) {
-        if (_isDead) {
+        if (isGameOver()) {
             _horizontalFactor = 0f;
         } else {
             _horizontalFactor = inputs._horizontalFactor;
         }
-        if (_isNumb || _isDead) {
+        if (_isNumb || isGameOver()) {
             _thrusting = false;
             _shooting = false;
         } else {
             _thrusting = inputs._pressingA;
-            _shooting = inputs._pressingB;
+            _shooting = inputs._justPressedB;
         }
     }
 
@@ -141,9 +139,7 @@ public class Player extends DynamicEntity implements TimerListener {
         if (distance > radius() + that.radius()){
             return false;
         }
-//        if (distance < that.radius() - width()){ //TODO: stupid
-//            return true;
-//        }
+
         final PointF[] thisVerts = CollisionDetection.pointListA;
         getPointList(thisVerts);
         final PointF[] thatVerts = CollisionDetection.pointListB;
@@ -162,14 +158,9 @@ public class Player extends DynamicEntity implements TimerListener {
         _velX = -impactUnit.x * KNOCKBACK;
         _velY = -impactUnit.y * KNOCKBACK;
         if (!_isRecovering) {
-            takeDamage();
-            if (!_isDead) recover();
-        }
-    }
-
-    private void takeDamage() {
-        if (!getScoring().loseLife()){
-            _isDead = true;
+            if (getScoring().loseLife()) { // if not dead
+                recover();
+            }
         }
     }
 
@@ -182,7 +173,7 @@ public class Player extends DynamicEntity implements TimerListener {
 
     @Override
     public boolean isDangerous(GLEntity that) {
-        return !(_isRecovering0 || _isDead);
+        return !_isRecovering0;
     }
 
     @Override
@@ -198,5 +189,14 @@ public class Player extends DynamicEntity implements TimerListener {
                 _hasLoaded = true;
                 break;
         }
+    }
+
+    public void reset(float x, float y) {
+        _x = x;
+        _y = y;
+        _velX = 0f;
+        _velY = 0f;
+        _rotation = 0f;
+        recover();
     }
 }

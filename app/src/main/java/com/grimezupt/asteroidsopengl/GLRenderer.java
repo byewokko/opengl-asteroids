@@ -28,14 +28,11 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     private float[] _bgColor;
     private long lastFrame;
-    private GLText _fpsText = null;
     private static SignalWindow _fpsQueue = new SignalWindow(10);
 
     public GLRenderer(World world) {
         _world = world;
         lastFrame = System.nanoTime();
-        _fpsText = new GLText("HELLO world", 1f, 1f);
-        _fpsText.setScale(2f);
     }
 
     @Override
@@ -57,6 +54,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void input() {
+        _game.getInputs().updateTransients();
         _world.input(_game.getInputs());
     }
 
@@ -86,7 +84,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         }
         _fpsQueue.put((float) frameTime);
 //        _fpsText.setString(String.format(Locale.ENGLISH,"%.1ffps", 1d/frameTime));
-        _fpsText.setString(String.format(Locale.ENGLISH,"%.1ffps", 1d/_fpsQueue.readAverage()));
+//        _fpsText.setString(String.format(Locale.ENGLISH,"%.1ffps", 1d/_fpsQueue.readAverage()));
     }
 
     public void render() {
@@ -101,11 +99,14 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         Matrix.orthoM(_viewportMatrix, offset, left, right, bottom, top, near, far);
         _world.render(_viewportMatrix);
         _game._hud.render(_viewportMatrix);
-        _fpsText.render(_viewportMatrix);
     }
 
     public void setBgColor(float[] bgColor) {
         _bgColor = bgColor;
         GLES20.glClearColor(_bgColor[0], _bgColor[1], _bgColor[2], _bgColor[3]);
+    }
+
+    public float getAvgFPS() {
+        return 1f/_fpsQueue.readAverage();
     }
 }

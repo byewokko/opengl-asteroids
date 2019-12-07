@@ -6,6 +6,7 @@ public class Scoring {
     public static final int MAX_LIVES = 4;
     public static final int LEVEL_CLEAR_BONUS = 50;
     public static final int FLAWLESS_LEVEL_BONUS = 50;
+    public static Game _game = null;
     public int _level = 1;
     public int _lives = 0;
     public long _score = 0;
@@ -27,6 +28,7 @@ public class Scoring {
             _lives--;
             return true;
         } else {
+            _game.onGameEvent(Game.Event.GAME_OVER, null);
             return false;
         }
     }
@@ -43,6 +45,7 @@ public class Scoring {
     }
 
     public int scorePoints(int points){
+        if (_game._gameOver) return 0;
         final int pointsTotal = points * _level;
         _score += pointsTotal;
         return pointsTotal;
@@ -53,7 +56,7 @@ public class Scoring {
             levelUp();
         } else if (event == Game.Event.LEVEL_START){
             resetLives();
-        } else if (event == Game.Event.GAME_START){
+        } else if (event == Game.Event.GAME_START || event == Game.Event.GAME_RESTART){
             init();
         }
     }
